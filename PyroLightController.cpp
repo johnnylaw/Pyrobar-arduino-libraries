@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include "PyroLightController.h"
 
-PyroLightController::PyroLightController(int numberOfAddressPins, uint8_t *boardAddressPins, uint8_t ledPins[MAX_ZONES_PER_BOARD][COLOR_COUNT], int totalZoneCount) : _numberOfAddressPins(numberOfAddressPins), _boardAddressPins(boardAddressPins), _totalZoneCount(totalZoneCount), _boardNumber(NULL) {
+PyroLightController::PyroLightController(int numberOfAddressPins, uint8_t *boardAddressPins, uint8_t ledPins[MAX_ZONES_PER_BOARD][COLOR_COUNT], int totalZoneCount, PyrobarLightValueMap lightMap) : _numberOfAddressPins(numberOfAddressPins), _boardAddressPins(boardAddressPins), _totalZoneCount(totalZoneCount), _boardNumber(NULL), _lightMap(lightMap) {
 }
 
 bool PyroLightController::isMaster() {
@@ -40,8 +40,8 @@ void PyroLightController::begin(void) {
 void PyroLightController::setLEDs(uint8_t freqBfrPos, uint8_t sndBfrPos) {
   for (int zone = 0; zone < _zoneCount; zone++) {
     for (int color = 0; color < COLOR_COUNT; color++) {
-      uint8_t freqValue = _freqBfrs[zone][freqBfrPos][color];
-      uint8_t sndValue = _sndBfrs[zone][sndBfrPos][color];
+      uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zone, freqBfrPos, color);
+      uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zone, sndBfrPos, color);
       analogWrite(_ledPins[zone][color], max(freqValue, sndValue));
     }
   }
