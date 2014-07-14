@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include "PyrobarLightValueMap.h"
 
-#define DEFAULT_FREQUENCY 0.25
-
 class PyroLightController {
 public:
   PyroLightController(int numberOfAddressPins, uint8_t *boardAddressPins, uint8_t ledPins[MAX_ZONES_PER_BOARD][COLOR_COUNT], int totalZoneCount, PyrobarLightValueMap lightMap);

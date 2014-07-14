@@ -2,7 +2,7 @@
 #include "PyroLightMaster.h"
 #include "PyroLightController.h"
 
-PyroLightMaster::PyroLightMaster() : _lastCyclePosition(0.0), _frequency(DEFAULT_FREQUENCY) {
+PyroLightMaster::PyroLightMaster(PyrobarLightValueMap lightMap) : _lastCyclePosition(0.0), _lightMap(lightMap) {
 }
 
 void PyroLightMaster::sendBufferPositions(uint8_t freqBfrPos, uint8_t sndBfrPos) {
@@ -22,7 +22,7 @@ void PyroLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
   float currentMillis = millis();
   float timeElapsed = currentMillis - _lastMillis;
   _lastMillis = currentMillis;
-  _lastCyclePosition += (timeElapsed * _frequency);
+  _lastCyclePosition += (timeElapsed * _lightMap.frequency());
   _lastCyclePosition = fmod(_lastCyclePosition, 1.0);
   *freqBfrPos = (uint8_t)(_lastCyclePosition * BFR_SZ_FREQ);
 }
@@ -30,5 +30,3 @@ void PyroLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
 void PyroLightMaster::calculateSoundBufferPosition(uint8_t *sndBfrPos) {
   *sndBfrPos = 0;
 }
-
-PyroLightMaster PyroMaster = PyroLightMaster();
