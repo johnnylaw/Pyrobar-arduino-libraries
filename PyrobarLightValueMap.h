@@ -6,14 +6,20 @@
 
 #define BFR_SZ_FREQ 256
 #define BFR_SZ_SND 16
-#define MAX_ZONES_PER_BOARD 4
+#define ZONES_PER_SLAVE_BOARD 4
 #define COLOR_COUNT 3
 #define BFR_TYPE_SOUND
 #define DEFAULT_FREQUENCY 0.25
 
+#ifndef TOTAL_ZONE_COUNT
+#define TOTAL_ZONE_COUNT 9
+#endif
+
 const String pyrobarDataTypeBuffer = "bfr";
-const String pyrobarBfrTypeSnd = "snd";
-const String pyrobarBfrTypeFreq = "freq";
+const String pyrobarBfrTypeSnd = "sound";
+const String pyrobarBfrTypeFreq = "frequency";
+
+const String pyrobarDataTypeFire = "fire";
 
 const String pyrobarDataTypeScalar = "sclr";
 const String pyrobarScalarTypeSoundSensitivity = "sndSens";
@@ -25,18 +31,24 @@ public:
   PyrobarLightValueMap();
 
 private:
-  uint8_t _freqBfrs[MAX_ZONES_PER_BOARD][BFR_SZ_FREQ][COLOR_COUNT];
-  uint8_t _sndBfrs[MAX_ZONES_PER_BOARD][BFR_SZ_SND][COLOR_COUNT];
+  uint8_t _freqBfrs[TOTAL_ZONE_COUNT][BFR_SZ_FREQ][COLOR_COUNT];
+  uint8_t _sndBfrs[TOTAL_ZONE_COUNT][BFR_SZ_SND][COLOR_COUNT];
+  int _bfrWritePtr[3];
   float _frequency;
   float _soundSensitivity;
 
 public:
-  void write(String type, int zone, int index, int color, uint8_t value);
+  bool write(String type, int zone, uint8_t value);
+  bool writeHexString(String type, int zone, String hexString);
   uint8_t read(String type, int zone, int index, int color);
   float frequency(void);
-  void setFrequency(float frequency);
   float soundSensitivity(void);
-  void setSoundSensitivity(float soundSensitivity);
+  bool setScalar(String type, float value);
+  int zoneCount(void);
+
+private:
+  void resetWritePtr(void);
+  void advanceWritePtr(int bfrLength);
 
 };
 

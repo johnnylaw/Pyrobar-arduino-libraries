@@ -42,7 +42,7 @@ void loop() {
   // if UDP packet comes in {
   //   parse for cannonNumber
   //   parse for duration
-  //   fireCannons[cannonNumber.fire(duration))
+  //   fireCannons[cannonNumber].fire(duration))
   delay(1000);
 }
 
