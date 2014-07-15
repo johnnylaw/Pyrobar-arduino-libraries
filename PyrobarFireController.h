@@ -7,7 +7,7 @@
 
 class PyrobarFireController {
   public:
-    PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins);
+    PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence sequence);
 
   private:
     PyrobarFireSequence _sequence;
@@ -21,7 +21,6 @@ class PyrobarFireController {
   public:
     void begin(void);
     bool play(void);
-    void setSequence(PyrobarFireSequence sequence);
     void reset(void);
 
   private:

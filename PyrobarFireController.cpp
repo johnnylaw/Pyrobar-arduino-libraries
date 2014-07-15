@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "PyrobarFireController.h"
 
-PyrobarFireController::PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins) : _numberOfCannons(numberOfCannons), _fireCannonPins(fireCannonPins) {
+PyrobarFireController::PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence sequence) : _numberOfCannons(numberOfCannons), _fireCannonPins(fireCannonPins), _sequence(sequence) {
   reset();
 }
 
@@ -42,13 +42,6 @@ bool PyrobarFireController::play() {
 void PyrobarFireController::reset() {
   _nextNoteIndex = 0;
   _startTime = NULL;
-}
-
-void PyrobarFireController::setSequence(PyrobarFireSequence sequence) {
-  _sequence = sequence;
-  reset();
-  Serial.println("NUM NOTES *********************");
-  Serial.println(sequence.numberOfNotes());
 }
 
 void PyrobarFireController::dumpSequence() {
