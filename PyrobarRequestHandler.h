@@ -8,10 +8,10 @@
 class PyrobarRequestHandler {
 
 public:
-  PyrobarRequestHandler(PyrobarLightValueMap lightMap);
+  PyrobarRequestHandler(PyrobarLightValueMap *lightMap);
 
 private:
-  PyrobarLightValueMap _lightMap;
+  PyrobarLightValueMap *_lightMap;
 
 public:
   void handleRequest(EthernetClient client);
