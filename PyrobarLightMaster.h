@@ -8,17 +8,19 @@
 
 class PyrobarLightMaster {
 public:
-  PyrobarLightMaster(PyrobarLightValueMap lightMap);
+  PyrobarLightMaster(PyrobarLightValueMap lightMap, uint8_t *ledPins);
 
 private:
   float _lastCyclePosition;
   unsigned long _lastMillis;
   PyrobarLightValueMap _lightMap;
   int _numberOfSlaves;
+  uint8_t *_ledPins;
 
 public:
   void calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos);
   void sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos);
+  void begin(void);
 
 private:
   void calculateFrequencyBufferPosition(uint8_t *freqBfrPos);
