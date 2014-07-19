@@ -2,23 +2,24 @@
 #include "PyrobarFireController.h"
 
 PyrobarFireController::PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence sequence) : _numberOfCannons(numberOfCannons), _fireCannonPins(fireCannonPins), _sequence(sequence) {
-  reset();
 }
 
 void PyrobarFireController::begin(void) {
   for (int i = 0; i < _numberOfCannons; i++) {
     pinMode(_fireCannonPins[i], OUTPUT);
   }
+  reset();
 }
 
 bool PyrobarFireController::play() {
+  unsigned int numberOfNotes = _sequence.numberOfNotes();
+  if (numberOfNotes < 1) return false;
   if (_startTime == NULL) {
     dumpSequence();
     _startTime = millis();
   }
 
   unsigned long currentSequenceTime = millis() - _startTime;
-  unsigned int numberOfNotes = _sequence.numberOfNotes();
 
   while (_nextNoteIndex < numberOfNotes && _sequence.startTimeAtIndex(_nextNoteIndex) <= currentSequenceTime) {
     digitalWrite(_fireCannonPins[_sequence.cannonAtIndex(_nextNoteIndex)], HIGH);
@@ -35,7 +36,6 @@ bool PyrobarFireController::play() {
     }
     i++;
   }
-
   return _nextNoteIndex < numberOfNotes || _noteStates[numberOfNotes - 1] != PYROBAR_FIRE_NOTE_FINISHED_STATE;
 }
 
