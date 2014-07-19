@@ -1,3 +1,4 @@
+#include "PyrobarConstants.h"
 #include "PyrobarLightValueMap.h"
 
 PyrobarLightValueMap::PyrobarLightValueMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(0.0) {
@@ -5,16 +6,29 @@ PyrobarLightValueMap::PyrobarLightValueMap() : _frequency((float)DEFAULT_FREQUEN
 }
 
 bool PyrobarLightValueMap::write(String type, int zone, uint8_t value) {
-  int index = _bfrWritePtr[1];
-  int color = _bfrWritePtr[2];
   int bfrLength;
-  if (zone != _bfrWritePtr[0] || color >= COLOR_COUNT) {
+  if (zone != _bfrWritePtr[0] || _bfrWritePtr[2] >= COLOR_COUNT) {
     resetWritePtr();
   }
+  _bfrWritePtr[0] = zone;
+  int index = _bfrWritePtr[1];
+  int color = _bfrWritePtr[2];
   if (color >= COLOR_COUNT) {
     return false;
   }
   if (type == pyrobarBfrTypeFreq) {
+    if (DEBUG_LIGHT_MAP && color == 0) {
+      Serial.print("Writing frequency buffer at address ");
+      Serial.print((long)(&_freqBfrs[0][0][0]));
+      Serial.print(" at zone ");
+      Serial.print(zone);
+      Serial.print(", index ");
+      Serial.print(index);
+      Serial.print(", color ");
+      Serial.print(color);
+      Serial.print(", value ");
+      Serial.println(value);
+    }
     _freqBfrs[zone][index][color] = value;
     advanceWritePtr(BFR_SZ_FREQ);
   } else if (type == pyrobarBfrTypeSnd) {
@@ -29,7 +43,7 @@ bool PyrobarLightValueMap::writeHexString(String type, int zone, String hexStrin
 }
 
 void PyrobarLightValueMap::resetWritePtr(void) {
-  _bfrWritePtr = {0, 0, 0};
+  _bfrWritePtr[1] = _bfrWritePtr[2] = 0;
 }
 
 void PyrobarLightValueMap::advanceWritePtr(int bfrLength) {
@@ -43,10 +57,29 @@ void PyrobarLightValueMap::advanceWritePtr(int bfrLength) {
 
 uint8_t PyrobarLightValueMap::read(String type, int zone, int index, int color) {
   if (type == pyrobarBfrTypeFreq) {
+    if (DEBUG_LIGHT_MAP && zone == 0) {
+      Serial.print("Reading frequency buffer at address ");
+      Serial.print((long)(&_freqBfrs[0][0][0]));
+      Serial.print(" for zone ");
+      Serial.print(zone);
+      Serial.print(", index ");
+      Serial.print(index);
+      Serial.print(", color ");
+      Serial.print(color);
+      Serial.print(". Returning ");
+      Serial.println(_freqBfrs[zone][index][color]);
+    }
     return _freqBfrs[zone][index][color];
   } else if (type == pyrobarBfrTypeSnd) {
     return _sndBfrs[zone][index][color];
   } else {
+    Serial.print("No buffer of type '");
+    Serial.print(type);
+    Serial.print("'. Choices are '");
+    Serial.print(pyrobarBfrTypeFreq);
+    Serial.print("' and '");
+    Serial.print(pyrobarBfrTypeSnd);
+    Serial.println("'.");
     return 0;
   }
 }
@@ -63,8 +96,16 @@ bool PyrobarLightValueMap::setScalar(String type, float value) {
   if (value <= 0.0 || value > 2.0) return false;
   if (type == pyrobarScalarTypeFrequency) {
     _frequency = value / 1000.0;
+    if (DEBUG_LIGHT_MAP) {
+      Serial.print("Frequency: ");
+      Serial.println(_frequency);
+    }
   } else if (type == pyrobarScalarTypeSoundSensitivity) {
     _soundSensitivity = value;
+    if (DEBUG_LIGHT_MAP) {
+      Serial.print("Sound sensitivity: ");
+      Serial.print(_soundSensitivity);
+    }
   } else {
     return false;
   }
