@@ -14,7 +14,7 @@ private:
   PyrobarLightValueMap *_lightMap;
 
 public:
-  void handleRequest(EthernetClient client);
+  void handleHTTPRequest(EthernetClient client);
 
 private:
   bool parseRequest(EthernetClient client);

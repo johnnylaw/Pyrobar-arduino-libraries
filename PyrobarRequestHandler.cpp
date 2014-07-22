@@ -5,7 +5,7 @@ PyrobarRequestHandler::PyrobarRequestHandler(PyrobarLightValueMap *lightMap) : _
 
 }
 
-void PyrobarRequestHandler::handleRequest(EthernetClient client) {
+void PyrobarRequestHandler::handleHTTPRequest(EthernetClient client) {
   if (DEBUG_LIGHT_MAP) {
     Serial.print("Light map in PyrobarRequestHandler at address ");
     Serial.println((long)_lightMap);
