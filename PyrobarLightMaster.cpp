@@ -8,15 +8,21 @@ PyrobarLightMaster::PyrobarLightMaster(PyrobarLightValueMap lightMap, uint8_t *l
 
 void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) {
   // go thru slave boards, write ZONES_PER_SLAVE_BOARD * COLOR_COUNT values to Wire for each
+  uint8_t aggregateValue;
 
   for (unsigned char board = 0; board < _numberOfSlaves; board++) {
     Wire.beginTransmission(BASE_I2C_ADDRESS + board);
     for (unsigned char boardZone = 0; boardZone < ZONES_PER_SLAVE_BOARD; boardZone++) {
       for (unsigned char color = 0; color < COLOR_COUNT; color++) {
-        unsigned char zoneIndex = board * ZONES_PER_SLAVE_BOARD + boardZone;
-        uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zoneIndex, freqBfrPos, color);
-        uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zoneIndex, sndBfrPos, color);
-        Wire.write(max(freqValue, sndValue));
+        if (_lightMap.shouldDisplay()) {
+          unsigned char zoneIndex = board * ZONES_PER_SLAVE_BOARD + boardZone;
+          uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zoneIndex, freqBfrPos, color);
+          uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zoneIndex, sndBfrPos, color);
+          aggregateValue = max(freqValue, sndValue);
+        } else {
+          aggregateValue = 0;
+        }
+        Wire.write(aggregateValue);
       }
     }
     Wire.endTransmission();
@@ -26,9 +32,14 @@ void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) 
   for (int zone = ZONES_PER_SLAVE_BOARD * _numberOfSlaves; zone < _lightMap.zoneCount(); zone++) {
     for (int color = 0; color < COLOR_COUNT; color++) {
       int localZoneIndex = zone % ZONES_PER_SLAVE_BOARD;
-      uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zone, freqBfrPos, color);
-      uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zone, sndBfrPos, color);
-      analogWrite(_ledPins[localZoneIndex * COLOR_COUNT + color], max(freqValue, sndValue));
+      if (_lightMap.shouldDisplay()) {
+        uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zone, freqBfrPos, color);
+        uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zone, sndBfrPos, color);
+        aggregateValue = max(freqValue, sndValue);
+      } else {
+        aggregateValue = 0;
+      }
+      analogWrite(_ledPins[localZoneIndex * COLOR_COUNT + color], aggregateValue);
     }
   }
 }

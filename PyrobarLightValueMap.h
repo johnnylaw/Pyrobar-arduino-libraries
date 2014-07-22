@@ -40,6 +40,7 @@ private:
   int _bfrWritePtr[3];
   float _frequency;
   float _soundSensitivity;
+  bool _allOff;
 
 public:
   bool write(String type, int zone, uint8_t value);
@@ -49,6 +50,7 @@ public:
   float soundSensitivity(void);
   bool setScalar(String type, float value);
   int zoneCount(void);
+  bool shouldDisplay(void);
 
 private:
   void resetWritePtr(void);

@@ -1,11 +1,12 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightValueMap.h"
 
-PyrobarLightValueMap::PyrobarLightValueMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(0.0) {
+PyrobarLightValueMap::PyrobarLightValueMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(0.0), _allOff(true) {
   resetWritePtr();
 }
 
 bool PyrobarLightValueMap::write(String type, int zone, uint8_t value) {
+  _allOff = false;
   int bfrLength;
   if (zone != _bfrWritePtr[0] || _bfrWritePtr[2] >= COLOR_COUNT) {
     resetWritePtr();
@@ -127,6 +128,10 @@ bool PyrobarLightValueMap::setScalar(String type, float value) {
     return false;
   }
   return true;
+}
+
+bool PyrobarLightValueMap::shouldDisplay(void) {
+  return !_allOff;
 }
 
 int PyrobarLightValueMap::zoneCount(void) {
