@@ -7,7 +7,11 @@
 #define BFR_SZ_FREQ 256
 #define BFR_SZ_SND 16
 #define ZONES_PER_SLAVE_BOARD 4
+
+#ifndef COLOR_COUNT
 #define COLOR_COUNT 3
+#endif
+
 #define BFR_TYPE_SOUND
 #define DEFAULT_FREQUENCY 0.25
 

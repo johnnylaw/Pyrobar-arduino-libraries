@@ -2,12 +2,13 @@
 #include "PyrobarRequestHandler.h"
 
 PyrobarRequestHandler::PyrobarRequestHandler(PyrobarLightValueMap *lightMap) : _lightMap(lightMap) {
+
 }
 
 void PyrobarRequestHandler::handleRequest(EthernetClient client) {
   if (DEBUG_LIGHT_MAP) {
     Serial.print("Light map in PyrobarRequestHandler at address ");
-    Serial.println((long)&_lightMap);
+    Serial.println((long)_lightMap);
   }
   if (DEBUG_REQUEST_HANDLER) {
     Serial.println("Handling request");
@@ -82,12 +83,9 @@ bool PyrobarRequestHandler::loadBuffer(String type, int zone, EthernetClient cli
   }
   char tempHex[3] = "00";
   bool success = true;
-  int maxCharacters = (type == pyrobarBfrTypeFreq) ? BFR_SZ_FREQ * COLOR_COUNT : BFR_SZ_SND;
-  int i = 0;
-  while((tempHex[0] = client.read()) != ' ' && (tempHex[1] = client.read()) != ' ' && i < maxCharacters) {
-    i++;
+  while((tempHex[0] = client.read()) != ' ' && (tempHex[1] = client.read()) != ' ') {
     unsigned char value = strtoul(tempHex, NULL, 16);
-    if (DEBUG_REQUEST_HANDLER) {
+    if (DEBUG_REQUEST_HANDLER && zone == 0) {
       Serial.print("Received '");
       Serial.print(tempHex);
       Serial.print("' -> ");

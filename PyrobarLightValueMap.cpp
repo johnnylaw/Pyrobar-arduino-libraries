@@ -14,6 +14,8 @@ bool PyrobarLightValueMap::write(String type, int zone, uint8_t value) {
   int index = _bfrWritePtr[1];
   int color = _bfrWritePtr[2];
   if (color >= COLOR_COUNT) {
+    Serial.print("Returning early because of color equal to ");
+    Serial.print(color);
     return false;
   }
   if (type == pyrobarBfrTypeFreq) {
@@ -32,8 +34,23 @@ bool PyrobarLightValueMap::write(String type, int zone, uint8_t value) {
     _freqBfrs[zone][index][color] = value;
     advanceWritePtr(BFR_SZ_FREQ);
   } else if (type == pyrobarBfrTypeSnd) {
+    if (DEBUG_LIGHT_MAP && color == 0) {
+      Serial.print("Writing sound buffer at address ");
+      Serial.print((long)(&_sndBfrs[0][0][0]));
+      Serial.print(" at zone ");
+      Serial.print(zone);
+      Serial.print(", index ");
+      Serial.print(index);
+      Serial.print(", color ");
+      Serial.print(color);
+      Serial.print(", value ");
+      Serial.println(value);
+    }
     _sndBfrs[zone][index][color] = value;
     advanceWritePtr(BFR_SZ_SND);
+  } else {
+    Serial.print("Unknown type (in PyrobarLightValueMap.cpp): ");
+    Serial.println(type);
   }
   return true;
 }
