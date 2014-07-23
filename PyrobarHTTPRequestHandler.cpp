@@ -45,6 +45,8 @@ bool PyrobarHTTPRequestHandler::parseRequest(EthernetClient client) {
           return handleFireSequence(client);
         } else if(dataType == pyrobarDataTypeScalar) {
           return handleScalar(client);
+        } else if(dataType == pyrobarDataTypeLights) {
+          return handleLightsOnOff(client);
         } else {
           return false;
         }
@@ -53,6 +55,18 @@ bool PyrobarHTTPRequestHandler::parseRequest(EthernetClient client) {
       return false;
     }
   }
+}
+
+bool PyrobarHTTPRequestHandler::handleLightsOnOff(EthernetClient client) {
+  String instruction = client.readStringUntil(' ');
+  if (DEBUG_REQUEST_HANDLER) {
+    Serial.print("Turning lights ");
+    Serial.println(instruction);
+  }
+  if (instruction == pyrobarLightsOut) _lightMap->turnLights(OFF);
+  else if (instruction == pyrobarLightsOn) _lightMap->turnLights(ON);
+  else return false;
+  return true;
 }
 
 bool PyrobarHTTPRequestHandler::handleBuffer(EthernetClient client) {

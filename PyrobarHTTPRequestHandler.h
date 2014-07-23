@@ -22,6 +22,7 @@ private:
   bool handleScalar(EthernetClient client);
   bool handleFireSequence(EthernetClient client);
   bool loadBuffer(String type, int zone, EthernetClient client);
+  bool handleLightsOnOff(EthernetClient client);
 
 };
 
