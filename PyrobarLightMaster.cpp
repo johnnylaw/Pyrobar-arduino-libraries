@@ -2,8 +2,8 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightMaster.h"
 
-PyrobarLightMaster::PyrobarLightMaster(PyrobarLightValueMap lightMap, uint8_t *ledPins) : _lastCyclePosition(0.0), _lightMap(lightMap), _ledPins(ledPins) {
-  _numberOfSlaves = (_lightMap.zoneCount() - 1) / ZONES_PER_SLAVE_BOARD + 1;
+PyrobarLightMaster::PyrobarLightMaster(PyrobarLightValueMap *lightMap, uint8_t *ledPins) : _lastCyclePosition(0.0), _lightMap(lightMap), _ledPins(ledPins) {
+  _numberOfSlaves = (_lightMap->zoneCount() - 1) / ZONES_PER_SLAVE_BOARD + 1;
 }
 
 void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) {
@@ -14,10 +14,10 @@ void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) 
     Wire.beginTransmission(BASE_I2C_ADDRESS + board);
     for (unsigned char boardZone = 0; boardZone < ZONES_PER_SLAVE_BOARD; boardZone++) {
       for (unsigned char color = 0; color < COLOR_COUNT; color++) {
-        if (_lightMap.shouldDisplay()) {
+        if (_lightMap->shouldDisplay()) {
           unsigned char zoneIndex = board * ZONES_PER_SLAVE_BOARD + boardZone;
-          uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zoneIndex, freqBfrPos, color);
-          uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zoneIndex, sndBfrPos, color);
+          uint8_t freqValue = _lightMap->read(pyrobarBfrTypeFreq, zoneIndex, freqBfrPos, color);
+          uint8_t sndValue = _lightMap->read(pyrobarBfrTypeSnd, zoneIndex, sndBfrPos, color);
           aggregateValue = max(freqValue, sndValue);
         } else {
           aggregateValue = 0;
@@ -29,12 +29,12 @@ void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) 
   }
 
   // Write zones that are on master board
-  for (int zone = ZONES_PER_SLAVE_BOARD * _numberOfSlaves; zone < _lightMap.zoneCount(); zone++) {
+  for (int zone = ZONES_PER_SLAVE_BOARD * _numberOfSlaves; zone < _lightMap->zoneCount(); zone++) {
     for (int color = 0; color < COLOR_COUNT; color++) {
       int localZoneIndex = zone % ZONES_PER_SLAVE_BOARD;
-      if (_lightMap.shouldDisplay()) {
-        uint8_t freqValue = _lightMap.read(pyrobarBfrTypeFreq, zone, freqBfrPos, color);
-        uint8_t sndValue = _lightMap.read(pyrobarBfrTypeSnd, zone, sndBfrPos, color);
+      if (_lightMap->shouldDisplay()) {
+        uint8_t freqValue = _lightMap->read(pyrobarBfrTypeFreq, zone, freqBfrPos, color);
+        uint8_t sndValue = _lightMap->read(pyrobarBfrTypeSnd, zone, sndBfrPos, color);
         aggregateValue = max(freqValue, sndValue);
       } else {
         aggregateValue = 0;
@@ -60,7 +60,7 @@ void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
   float currentMillis = millis();
   float timeElapsed = currentMillis - _lastMillis;
   _lastMillis = currentMillis;
-  _lastCyclePosition += (timeElapsed * _lightMap.frequency());
+  _lastCyclePosition += (timeElapsed * _lightMap->frequency());
   _lastCyclePosition = fmod(_lastCyclePosition, 1.0);
   *freqBfrPos = (uint8_t)(_lastCyclePosition * BFR_SZ_FREQ);
 }

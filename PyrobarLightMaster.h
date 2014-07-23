@@ -8,12 +8,12 @@
 
 class PyrobarLightMaster {
 public:
-  PyrobarLightMaster(PyrobarLightValueMap lightMap, uint8_t *ledPins);
+  PyrobarLightMaster(PyrobarLightValueMap *lightMap, uint8_t *ledPins);
 
 private:
   float _lastCyclePosition;
   unsigned long _lastMillis;
-  PyrobarLightValueMap _lightMap;
+  PyrobarLightValueMap *_lightMap;
   int _numberOfSlaves;
   uint8_t *_ledPins;
 
