@@ -10,4 +10,9 @@ class PyrobarUDPRequestHandler {
 public:
   PyrobarUDPRequestHandler(PyrobarLightValueMap *lightMap);
 
+private:
+  PyrobarLightValueMap *_lightMap;
+
+};
+
 #endif

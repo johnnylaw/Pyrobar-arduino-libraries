@@ -1,5 +1,6 @@
+#include "PyrobarConstants.h"
 #include "PyrobarUDPRequestHandler.h"
 
-PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightValueMap *_lightMap) {
+PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightValueMap *lightMap) : _lightMap(lightMap) {
 
 }
