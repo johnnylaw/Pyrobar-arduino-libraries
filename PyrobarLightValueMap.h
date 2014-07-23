@@ -23,6 +23,10 @@ const String pyrobarDataTypeBuffer = "bfr";
 const String pyrobarBfrTypeSnd = "sound";
 const String pyrobarBfrTypeFreq = "frequency";
 
+const String pyrobarDataTypeLights = "lights";
+const String pyrobarLightsOut = "out";
+const String pyrobarLightsOn = "on";
+
 const String pyrobarDataTypeFire = "fire";
 
 const String pyrobarDataTypeScalar = "sclr";
@@ -51,6 +55,7 @@ public:
   bool setScalar(String type, float value);
   int zoneCount(void);
   bool shouldDisplay(void);
+  void turnLights(bool on);
 
 private:
   void resetWritePtr(void);

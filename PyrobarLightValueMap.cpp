@@ -130,6 +130,10 @@ bool PyrobarLightValueMap::setScalar(String type, float value) {
   return true;
 }
 
+void PyrobarLightValueMap::turnLights(bool on) {
+  _allOff = !on;
+}
+
 bool PyrobarLightValueMap::shouldDisplay(void) {
   return !_allOff;
 }
