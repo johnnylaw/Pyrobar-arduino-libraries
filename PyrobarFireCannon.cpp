@@ -7,8 +7,9 @@ void PyrobarFireCannon::begin(void) {
 }
 
 void PyrobarFireCannon::fire(long int duration) {
+  if (duration == 0 || duration > FIRE_CANNON_MAX_DURATION) duration = FIRE_CANNON_MAX_DURATION;
   _lastTurnedOn = millis();
-  _scheduledShutoff = _lastTurnedOn + min(FIRE_CANNON_MAX_DURATION, duration);
+  _scheduledShutoff = _lastTurnedOn + duration;
   digitalWrite(_pin, HIGH);
 }
 

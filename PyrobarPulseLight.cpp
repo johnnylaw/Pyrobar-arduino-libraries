@@ -13,10 +13,20 @@ void PyrobarPulseLight::pulse(uint8_t red, uint8_t green, uint8_t blue, float de
   if (decay > 0.0) {
     startDecay();
   }
+  if (DEBUG_PULSE_LIGHT) {
+    Serial.print("RGB: ");
+    Serial.print(red);
+    Serial.print(", ");
+    Serial.print(green);
+    Serial.print(", ");
+    Serial.print(blue);
+    Serial.print(", ");
+    Serial.println(decay);
+  }
 }
 
 void PyrobarPulseLight::startDecay(void) {
-  _startedDecayingAt = millis();
+  if (_startedDecayingAt == 0.0 && _alive) _startedDecayingAt = millis();
 }
 
 uint8_t PyrobarPulseLight::read(int color) {
