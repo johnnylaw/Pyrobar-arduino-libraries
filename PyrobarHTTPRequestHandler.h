@@ -1,20 +1,20 @@
-#ifndef _PYROBAR_REQUEST_HANDLER_H
-#define _PYROBAR_REQUEST_HANDLER_H
+#ifndef _PYROBAR_HTTP_REQUEST_HANDLER_H
+#define _PYROBAR_HTTP_REQUEST_HANDLER_H
 
 #include <Arduino.h>
 #include <Ethernet.h>
 #include "PyrobarLightValueMap.h"
 
-class PyrobarRequestHandler {
+class PyrobarHTTPRequestHandler {
 
 public:
-  PyrobarRequestHandler(PyrobarLightValueMap *lightMap);
+  PyrobarHTTPRequestHandler(PyrobarLightValueMap *lightMap);
 
 private:
   PyrobarLightValueMap *_lightMap;
 
 public:
-  void handleHTTPRequest(EthernetClient client);
+  void handleRequest(EthernetClient client);
 
 private:
   bool parseRequest(EthernetClient client);

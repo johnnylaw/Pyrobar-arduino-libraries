@@ -1,13 +1,13 @@
 #include "PyrobarConstants.h"
-#include "PyrobarRequestHandler.h"
+#include "PyrobarHTTPRequestHandler.h"
 
-PyrobarRequestHandler::PyrobarRequestHandler(PyrobarLightValueMap *lightMap) : _lightMap(lightMap) {
+PyrobarHTTPRequestHandler::PyrobarHTTPRequestHandler(PyrobarLightValueMap *lightMap) : _lightMap(lightMap) {
 
 }
 
-void PyrobarRequestHandler::handleHTTPRequest(EthernetClient client) {
+void PyrobarHTTPRequestHandler::handleRequest(EthernetClient client) {
   if (DEBUG_LIGHT_MAP) {
-    Serial.print("Light map in PyrobarRequestHandler at address ");
+    Serial.print("Light map in PyrobarHTTPRequestHandler at address ");
     Serial.println((long)_lightMap);
   }
   if (DEBUG_REQUEST_HANDLER) {
@@ -30,7 +30,7 @@ void PyrobarRequestHandler::handleHTTPRequest(EthernetClient client) {
   client.stop();
 }
 
-bool PyrobarRequestHandler::parseRequest(EthernetClient client) {
+bool PyrobarHTTPRequestHandler::parseRequest(EthernetClient client) {
   if (client.available()) {
     if(client.readStringUntil(' ') == "GET") {
       if(client.read() == '/') {
@@ -55,7 +55,7 @@ bool PyrobarRequestHandler::parseRequest(EthernetClient client) {
   }
 }
 
-bool PyrobarRequestHandler::handleBuffer(EthernetClient client) {
+bool PyrobarHTTPRequestHandler::handleBuffer(EthernetClient client) {
   // E.g. /bfr/snd/0/000001...
 
   String bufferType = client.readStringUntil('/');
@@ -76,7 +76,7 @@ bool PyrobarRequestHandler::handleBuffer(EthernetClient client) {
   }
 }
 
-bool PyrobarRequestHandler::loadBuffer(String type, int zone, EthernetClient client) {
+bool PyrobarHTTPRequestHandler::loadBuffer(String type, int zone, EthernetClient client) {
   if (DEBUG_REQUEST_HANDLER) {
     Serial.print("Loading buffer for zone ");
     Serial.println(zone);
@@ -96,7 +96,7 @@ bool PyrobarRequestHandler::loadBuffer(String type, int zone, EthernetClient cli
   return success;
 }
 
-bool PyrobarRequestHandler::handleScalar(EthernetClient client) {
+bool PyrobarHTTPRequestHandler::handleScalar(EthernetClient client) {
   // E.g. /sclr/sndSens/0.789
   String scalarType = client.readStringUntil('/');
   if (DEBUG_REQUEST_HANDLER) {
@@ -107,6 +107,6 @@ bool PyrobarRequestHandler::handleScalar(EthernetClient client) {
   return _lightMap->setScalar(scalarType, value);
 }
 
-bool PyrobarRequestHandler::handleFireSequence(EthernetClient client) {
+bool PyrobarHTTPRequestHandler::handleFireSequence(EthernetClient client) {
   // E.g. /fire/012341234012341234012341234
 }
