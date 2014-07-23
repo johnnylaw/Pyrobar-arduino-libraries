@@ -1,9 +1,6 @@
 #include "PyrobarPulseLight.h"
 
-PyrobarPulseLight::PyrobarPulseLight(uint8_t redPin, uint8_t greenPin, uint8_t bluePin) : _alive(false) {
-  _pins[0] = redPin;
-  _pins[1] = greenPin;
-  _pins[2] = bluePin;
+PyrobarPulseLight::PyrobarPulseLight() : _alive(false) {
 }
 
 void PyrobarPulseLight::pulse(uint8_t red, uint8_t green, uint8_t blue, float decay) {
@@ -12,16 +9,27 @@ void PyrobarPulseLight::pulse(uint8_t red, uint8_t green, uint8_t blue, float de
   _values[2] = blue;
   _decay = decay;
   _alive = true;
-  _startedAt = millis();
+  _startedDecayingAt = 0;
+  if (decay > 0.0) {
+    startDecay();
+  }
 }
 
-void PyrobarPulseLight::adjust(void) {
+void PyrobarPulseLight::startDecay(void) {
+  _startedDecayingAt = millis();
+}
+
+uint8_t PyrobarPulseLight::read(int color) {
+  uint8_t value = 0;
   if (_alive) {
-    float multiplier = pow(millis() - _startedAt, _decay);
-    for (int i = 0; i < COLOR_COUNT; i++) {
-      analogWrite(_pins[i], _values[i] * multiplier);
+    float multiplier = 1.0;
+    if (_startedDecayingAt) {
+      multiplier = pow(0.5, (millis() - _startedDecayingAt) / _decay);
     }
+    value = _values[color] * multiplier;
+    if (value == 0) kill();
   }
+  return value;
 }
 
 void PyrobarPulseLight::kill(void) {

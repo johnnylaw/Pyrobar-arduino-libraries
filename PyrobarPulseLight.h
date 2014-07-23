@@ -6,19 +6,19 @@
 
 class PyrobarPulseLight {
 public:
-  PyrobarPulseLight(uint8_t redPin, uint8_t greenPin, uint8_t bluePin);
+  PyrobarPulseLight();
 
 private:
   uint8_t _values[COLOR_COUNT];
-  uint8_t _pins[COLOR_COUNT];
-  unsigned long _startedAt;
+  unsigned long _startedDecayingAt;
   float _decay;
   bool _alive;
 
 public:
   void pulse(uint8_t red, uint8_t green, uint8_t blue, float decay);
-  void adjust(void);
+  uint8_t read(int color);
   void kill(void);
+  void startDecay(void);
 };
 
 #endif

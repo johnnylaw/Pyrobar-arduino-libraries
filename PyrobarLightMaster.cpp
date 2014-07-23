@@ -6,10 +6,10 @@ PyrobarLightMaster::PyrobarLightMaster(PyrobarLightValueMap *lightMap, uint8_t *
   _numberOfSlaves = (_lightMap->zoneCount() - 1) / ZONES_PER_SLAVE_BOARD + 1;
 }
 
-void PyrobarLightMaster::sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos) {
+void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfrPos) {
   // go thru slave boards, write ZONES_PER_SLAVE_BOARD * COLOR_COUNT values to Wire for each
-  uint8_t aggregateValue;
 
+  // Write zones on slave boards
   for (unsigned char board = 0; board < _numberOfSlaves; board++) {
     Wire.beginTransmission(BASE_I2C_ADDRESS + board);
     for (unsigned char boardZone = 0; boardZone < ZONES_PER_SLAVE_BOARD; boardZone++) {

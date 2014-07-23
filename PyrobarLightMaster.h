@@ -19,7 +19,7 @@ private:
 
 public:
   void calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos);
-  void sendLightValues(uint8_t freqBfrPos, uint8_t sndBfrPos);
+  void sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfrPos);
   void begin(void);
 
 private:
