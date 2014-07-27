@@ -53,7 +53,6 @@ public:
   float frequency(void);
   float soundSensitivity(void);
   bool setScalar(String type, float value);
-  int zoneCount(void);
   bool shouldDisplay(void);
   void turnLights(bool on);
 

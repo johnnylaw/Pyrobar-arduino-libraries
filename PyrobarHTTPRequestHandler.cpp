@@ -80,7 +80,7 @@ bool PyrobarHTTPRequestHandler::handleBuffer(EthernetClient client) {
 
   if (bufferType == pyrobarBfrTypeFreq || bufferType == pyrobarBfrTypeSnd) {
     int zone = atoi(client.readStringUntil('/').c_str());
-    if (zone < _lightMap->zoneCount()) {
+    if (zone < TOTAL_ZONE_COUNT) {
       loadBuffer(bufferType, zone, client);
       return true;
     } else {

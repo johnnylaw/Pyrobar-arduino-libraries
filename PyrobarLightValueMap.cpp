@@ -137,7 +137,3 @@ void PyrobarLightValueMap::turnLights(bool on) {
 bool PyrobarLightValueMap::shouldDisplay(void) {
   return !_allOff;
 }
-
-int PyrobarLightValueMap::zoneCount(void) {
-  return TOTAL_ZONE_COUNT;
-}
