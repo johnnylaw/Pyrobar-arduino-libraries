@@ -5,7 +5,7 @@
 #include "PyrobarLightValueMap.h"
 #include "PyrobarPulseLightSet.h"
 
-#define BASE_I2C_ADDRESS 16 // should include in something shared by master and slave
+#define BASE_I2C_ADDRESS 0x10 // should include in something shared by master and slave
 
 class PyrobarLightMaster {
 public:
