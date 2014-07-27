@@ -4,14 +4,16 @@
 #include <Arduino.h>
 #include <Ethernet.h>
 #include "PyrobarLightMap.h"
+#include "PyrobarFireSequence.h"
 
 class PyrobarHTTPRequestHandler {
 
 public:
-  PyrobarHTTPRequestHandler(PyrobarLightMap *lightMap);
+  PyrobarHTTPRequestHandler(PyrobarLightMap *lightMap, PyrobarFireSequence *fireSequence);
 
 private:
   PyrobarLightMap *_lightMap;
+  PyrobarFireSequence *_fireSequence;
 
 public:
   void handleRequest(EthernetClient client);

@@ -1,7 +1,7 @@
 #include "PyrobarConstants.h"
 #include "PyrobarHTTPRequestHandler.h"
 
-PyrobarHTTPRequestHandler::PyrobarHTTPRequestHandler(PyrobarLightMap *lightMap) : _lightMap(lightMap) {
+PyrobarHTTPRequestHandler::PyrobarHTTPRequestHandler(PyrobarLightMap *lightMap, PyrobarFireSequence *fireSequence) : _lightMap(lightMap), _fireSequence(fireSequence) {
 
 }
 
