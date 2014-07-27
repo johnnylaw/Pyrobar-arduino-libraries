@@ -63,9 +63,9 @@ bool PyrobarHTTPRequestHandler::handleLightsOnOff(EthernetClient client) {
     Serial.print("Turning lights ");
     Serial.println(instruction);
   }
-  // if (instruction == pyrobarLightsOut) _lightMap->turnLights(OFF);
-  // else if (instruction == pyrobarLightsOn) _lightMap->turnLights(ON);
-  // else return false;
+  if (instruction == pyrobarLightsOut) _lightMap->turnLights(OFF);
+  else if (instruction == pyrobarLightsOn) _lightMap->turnLights(ON);
+  else return false;
   return true;
 }
 
@@ -105,7 +105,7 @@ bool PyrobarHTTPRequestHandler::loadBuffer(String type, int zone, EthernetClient
       Serial.print("' -> ");
       Serial.println(value);
     }
-    // if (!_lightMap->write(type, zone, value)) success = false;
+    if (!_lightMap->write(type, zone, value)) success = false;
   }
   return success;
 }
@@ -118,7 +118,7 @@ bool PyrobarHTTPRequestHandler::handleScalar(EthernetClient client) {
     Serial.println(scalarType);
   }
   float value = client.readStringUntil(' ').toFloat();
-  // return _lightMap->setScalar(scalarType, value);
+  return _lightMap->setScalar(scalarType, value);
 }
 
 bool PyrobarHTTPRequestHandler::handleFireSequence(EthernetClient client) {

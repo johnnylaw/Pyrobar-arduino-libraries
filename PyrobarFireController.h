@@ -7,10 +7,10 @@
 
 class PyrobarFireController {
   public:
-    PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence sequence);
+    PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence *sequence);
 
   private:
-    PyrobarFireSequence _sequence;
+    PyrobarFireSequence *_sequence;
     int _numberOfCannons;
     uint8_t *_fireCannonPins;
     unsigned long _startTime;
