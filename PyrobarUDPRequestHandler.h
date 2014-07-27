@@ -3,16 +3,16 @@
 
 #include <Arduino.h>
 #include <Ethernet.h>
-#include "PyrobarLightValueMap.h"
+#include "PyrobarLightMap.h"
 #include "PyrobarPulseLightSet.h"
 
 class PyrobarUDPRequestHandler {
 
 public:
-  PyrobarUDPRequestHandler(PyrobarLightValueMap *lightMap, PyrobarPulseLightSet *pulseLightSet);
+  PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet);
 
 private:
-  PyrobarLightValueMap *_lightMap;
+  PyrobarLightMap *_lightMap;
   PyrobarPulseLightSet *_pulseLightSet;
 
 public:

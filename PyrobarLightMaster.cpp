@@ -2,7 +2,7 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightMaster.h"
 
-PyrobarLightMaster::PyrobarLightMaster(PyrobarLightValueMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _ledPins(ledPins) {
+PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _ledPins(ledPins) {
   _numberOfSlaves = (TOTAL_ZONE_COUNT - 1) / ZONES_PER_SLAVE_BOARD;
 }
 

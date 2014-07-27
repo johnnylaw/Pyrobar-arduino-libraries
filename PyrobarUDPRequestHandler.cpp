@@ -1,7 +1,7 @@
 #include "PyrobarConstants.h"
 #include "PyrobarUDPRequestHandler.h"
 
-PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightValueMap *lightMap, PyrobarPulseLightSet *pulseLightSet) : _lightMap(lightMap), _pulseLightSet(pulseLightSet) {
+PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet) : _lightMap(lightMap), _pulseLightSet(pulseLightSet) {
 }
 
 void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) {

@@ -3,15 +3,15 @@
 
 #include <Arduino.h>
 #include <Ethernet.h>
-#include "PyrobarLightValueMap.h"
+#include "PyrobarLightMap.h"
 
 class PyrobarHTTPRequestHandler {
 
 public:
-  PyrobarHTTPRequestHandler(PyrobarLightValueMap *lightMap);
+  PyrobarHTTPRequestHandler(PyrobarLightMap *lightMap);
 
 private:
-  PyrobarLightValueMap *_lightMap;
+  PyrobarLightMap *_lightMap;
 
 public:
   void handleRequest(EthernetClient client);

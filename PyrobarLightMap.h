@@ -1,5 +1,5 @@
-#ifndef _PYROBAR_LIGHT_VALUE_MAP_H
-#define _PYROBAR_LIGHT_VALUE_MAP_H
+#ifndef _PYROBAR_LIGHT_MAP_H
+#define _PYROBAR_LIGHT_MAP_H
 
 #include <Arduino.h>
 #include <String.h>
@@ -33,10 +33,10 @@ const String pyrobarDataTypeScalar = "sclr";
 const String pyrobarScalarTypeSoundSensitivity = "sndSens";
 const String pyrobarScalarTypeFrequency = "freq";
 
-class PyrobarLightValueMap {
+class PyrobarLightMap {
 
 public:
-  PyrobarLightValueMap();
+  PyrobarLightMap();
 
 private:
   uint8_t _freqBfrs[TOTAL_ZONE_COUNT][BFR_SZ_FREQ][COLOR_COUNT];

@@ -2,19 +2,19 @@
 #define _PYRO_LIGHT_MASTER_H
 
 #include <Arduino.h>
-#include "PyrobarLightValueMap.h"
+#include "PyrobarLightMap.h"
 #include "PyrobarPulseLightSet.h"
 
 #define BASE_I2C_ADDRESS 0x10 // should include in something shared by master and slave
 
 class PyrobarLightMaster {
 public:
-  PyrobarLightMaster(PyrobarLightValueMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins);
+  PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins);
 
 private:
   float _lastCyclePosition;
   unsigned long _lastMillis;
-  PyrobarLightValueMap *_lightMap;
+  PyrobarLightMap *_lightMap;
   PyrobarPulseLightSet *_pulseLightSet;
   int _numberOfSlaves;
   uint8_t *_ledPins;

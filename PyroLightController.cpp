@@ -1,7 +1,7 @@
 // #include <Wire.h>
 // #include "PyroLightController.h"
 //
-// PyroLightController::PyroLightController(int numberOfAddressPins, uint8_t *boardAddressPins, uint8_t ledPins[MAX_ZONES_PER_BOARD][COLOR_COUNT], int totalZoneCount, PyrobarLightValueMap lightMap) : _numberOfAddressPins(numberOfAddressPins), _boardAddressPins(boardAddressPins), _totalZoneCount(totalZoneCount), _boardNumber(NULL), _lightMap(lightMap) {
+// PyroLightController::PyroLightController(int numberOfAddressPins, uint8_t *boardAddressPins, uint8_t ledPins[MAX_ZONES_PER_BOARD][COLOR_COUNT], int totalZoneCount, PyrobarLightMap lightMap) : _numberOfAddressPins(numberOfAddressPins), _boardAddressPins(boardAddressPins), _totalZoneCount(totalZoneCount), _boardNumber(NULL), _lightMap(lightMap) {
 // }
 //
 // bool PyroLightController::isMaster() {

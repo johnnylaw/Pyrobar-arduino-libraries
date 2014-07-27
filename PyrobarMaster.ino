@@ -28,7 +28,7 @@ uint8_t firePins[NUM_FIRE_CANNONS] = {25, 26, 27};
 uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
 
 PyrobarFireCannon fireCannons[NUM_FIRE_CANNONS] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
-static PyrobarLightValueMap lightMap = PyrobarLightValueMap();
+static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
 
 static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins);
@@ -121,8 +121,8 @@ void printDiagnostics() {
       Serial.print(")\t");
     }
     Serial.println();
-  }  
-  
+  }
+
   Serial.print("Sound senstivity: ");
   Serial.print(lightMap.soundSensitivity());
   Serial.print(", Frequency: ");
