@@ -12,6 +12,10 @@ void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfr
   // Write zones on slave boards
   for (unsigned char board = 0; board < _numberOfSlaves; board++) {
     Wire.beginTransmission(BASE_I2C_ADDRESS + board);
+    if (DEBUG_LIGHT_OUTPUT) {
+      Serial.print("Transmitting to ");
+      Serial.println(BASE_I2C_ADDRESS + board);
+    }
     for (unsigned char boardZone = 0; boardZone < ZONES_PER_SLAVE_BOARD; boardZone++) {
       unsigned char zoneIndex = board * ZONES_PER_SLAVE_BOARD + boardZone;
       for (unsigned char color = 0; color < COLOR_COUNT; color++) {
@@ -21,6 +25,9 @@ void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfr
           value = max(freqValue, sndValue);
         } else {
           value = _pulseLightSet->read(zoneIndex, color);
+        }
+        if (DEBUG_LIGHT_OUTPUT && boardZone == 0) {
+          Serial.println(value);
         }
         Wire.write(value);
       }
