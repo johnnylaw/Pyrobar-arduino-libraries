@@ -16,7 +16,7 @@ void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) 
       break;
     case UDP_PULSE_LIGHT_ON:
       _lightMap->turnLights(OFF);
-      if (length == 6) decay = buffer[5] * 8;
+      if (length == 6) decay = buffer[5];
       if (DEBUG_UDP) {
         Serial.print("PULSING LIGHT at zone ");
         Serial.print(buffer[1]);
@@ -32,7 +32,11 @@ void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) 
       _pulseLightSet->pulse(buffer[1], buffer[2], buffer[3], buffer[4], decay);
       break;
     case UDP_PULSE_LIGHTS_DECAY_ON:
-      _pulseLightSet->startDecayAll();
+      if (DEBUG_UDP) {
+        Serial.print("Starting decay all: ");
+        Serial.println(buffer[1]);
+      }
+      _pulseLightSet->startDecayAll(buffer[1]);
       break;
     default:
       break;

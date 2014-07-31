@@ -18,7 +18,7 @@ public:
   void pulse(uint8_t red, uint8_t green, uint8_t blue, float decay);
   uint8_t read(int color);
   void kill(void);
-  void startDecay(void);
+  void startDecay(float decay);
 };
 
 #endif

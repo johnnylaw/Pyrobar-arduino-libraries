@@ -7,11 +7,10 @@ void PyrobarPulseLight::pulse(uint8_t red, uint8_t green, uint8_t blue, float de
   _values[0] = red;
   _values[1] = green;
   _values[2] = blue;
-  _decay = decay;
   _alive = true;
   _startedDecayingAt = 0;
   if (decay > 0.0) {
-    startDecay();
+    startDecay(decay);
   }
   if (DEBUG_PULSE_LIGHT) {
     Serial.print("RGB: ");
@@ -25,8 +24,9 @@ void PyrobarPulseLight::pulse(uint8_t red, uint8_t green, uint8_t blue, float de
   }
 }
 
-void PyrobarPulseLight::startDecay(void) {
-  if (_startedDecayingAt == 0.0 && _alive) _startedDecayingAt = millis();
+void PyrobarPulseLight::startDecay(float decay) {
+  _decay = decay * 8;
+  if (_startedDecayingAt == 0 && _alive) _startedDecayingAt = millis();
 }
 
 uint8_t PyrobarPulseLight::read(int color) {
@@ -37,7 +37,10 @@ uint8_t PyrobarPulseLight::read(int color) {
       multiplier = pow(0.5, (millis() - _startedDecayingAt) / _decay);
     }
     value = _values[color] * multiplier;
-    if (value == 0) kill();
+    if (DEBUG_PULSE_LIGHT) {
+      Serial.print("Value for color"); Serial.print(color); Serial.print(": ");
+      Serial.println(value);
+    }
   }
   return value;
 }

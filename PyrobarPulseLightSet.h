@@ -14,7 +14,7 @@ private:
 
 public:
   uint8_t read(int zone, int color);
-  void startDecayAll(void);
+  void startDecayAll(float decay);
   void pulse(int zone, uint8_t red, uint8_t green, uint8_t blue, float decay);
 
 };
