@@ -19,19 +19,19 @@
 #define TOTAL_ZONE_COUNT 9
 #endif
 
-const String pyrobarDataTypeBuffer = "bfr";
-const String pyrobarBfrTypeSnd = "sound";
-const String pyrobarBfrTypeFreq = "frequency";
+const char pyrobarDataTypeBuffer[] = "bfr";
+const char pyrobarBfrTypeSnd[] = "sound";
+const char pyrobarBfrTypeFreq[] = "frequency";
 
-const String pyrobarDataTypeLights = "lights";
-const String pyrobarLightsOut = "out";
-const String pyrobarLightsOn = "on";
+const char pyrobarDataTypeLights[] = "lights";
+const char pyrobarLightsOut[] = "out";
+const char pyrobarLightsOn[] = "on";
 
-const String pyrobarDataTypeFire = "fire";
+const char pyrobarDataTypeFire[] = "fire";
 
-const String pyrobarDataTypeScalar = "sclr";
-const String pyrobarScalarTypeSoundSensitivity = "sndSens";
-const String pyrobarScalarTypeFrequency = "freq";
+const char pyrobarDataTypeScalar[] = "sclr";
+const char pyrobarScalarTypeSoundSensitivity[] = "sndSens";
+const char pyrobarScalarTypeFrequency[] = "freq";
 
 class PyrobarLightMap {
 
