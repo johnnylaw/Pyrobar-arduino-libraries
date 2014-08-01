@@ -5,15 +5,17 @@
 #include <Ethernet.h>
 #include "PyrobarLightMap.h"
 #include "PyrobarPulseLightSet.h"
+#include "PyrobarFireSequence.h"
 
 class PyrobarUDPRequestHandler {
 
 public:
-  PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet);
+  PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, PyrobarFireSequence *fireSequence);
 
 private:
   PyrobarLightMap *_lightMap;
   PyrobarPulseLightSet *_pulseLightSet;
+  PyrobarFireSequence *_fireSequence;
 
 public:
   void handleRequest(unsigned char *buffer, int length);

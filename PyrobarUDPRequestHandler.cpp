@@ -1,22 +1,34 @@
 #include "PyrobarConstants.h"
 #include "PyrobarUDPRequestHandler.h"
 
-PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet) : _lightMap(lightMap), _pulseLightSet(pulseLightSet) {
+PyrobarUDPRequestHandler::PyrobarUDPRequestHandler(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, PyrobarFireSequence *fireSequence) : _lightMap(lightMap), _pulseLightSet(pulseLightSet), _fireSequence(fireSequence) {
 }
 
 void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) {
+  if (DEBUG_UDP) Serial.println("Handling UDP request");
   float decay = 0;
   switch (buffer[0]) {
     case UDP_FIRE_ON:
-      // zone
-      // duration
+      _fireSequence->addNote(buffer[1], 0, buffer[2] * 256 + buffer[3]);
+
+      if (DEBUG_UDP_FIRE) {
+        Serial.print("ON cannon ");
+        Serial.println(buffer[1]);
+      }
       break;
     case UDP_FIRE_OFF:
-      // zone
+      _fireSequence->kill(buffer[1]);
+
+      if (DEBUG_UDP_FIRE) {
+        Serial.print("OFF cannon ");
+        Serial.println(buffer[1]);
+      }
       break;
     case UDP_PULSE_LIGHT_ON:
       _lightMap->turnLights(OFF);
       if (length == 6) decay = buffer[5];
+      _pulseLightSet->pulse(buffer[1], buffer[2], buffer[3], buffer[4], decay);
+
       if (DEBUG_UDP) {
         Serial.print("PULSING LIGHT at zone ");
         Serial.print(buffer[1]);
@@ -29,14 +41,14 @@ void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) 
         Serial.print(", DECAY: ");
         Serial.println(decay);
       }
-      _pulseLightSet->pulse(buffer[1], buffer[2], buffer[3], buffer[4], decay);
       break;
     case UDP_PULSE_LIGHTS_DECAY_ON:
+      _pulseLightSet->startDecayAll(buffer[1]);
+
       if (DEBUG_UDP) {
         Serial.print("Starting decay all: ");
         Serial.println(buffer[1]);
       }
-      _pulseLightSet->startDecayAll(buffer[1]);
       break;
     default:
       break;
