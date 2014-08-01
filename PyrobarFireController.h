@@ -18,6 +18,7 @@ class PyrobarFireController {
     unsigned long _actualNoteStartTimes[MAX_NOTES];
     int _nextNoteIndex;
     unsigned long _currentSequenceTime;
+    bool _cannonsOn[CANNON_COUNT];
 
   public:
     void begin(void);
@@ -33,5 +34,6 @@ class PyrobarFireController {
     void turnOnNoteAtIndex(int index);
     void turnOffNoteAtIndex(int index);
     void killAll(void);
+    bool allCannonsAreOff(void);
 
 };

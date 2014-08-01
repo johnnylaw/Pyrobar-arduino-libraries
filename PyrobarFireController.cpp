@@ -40,10 +40,12 @@ bool PyrobarFireController::play() {
   if (_nextNoteIndex < numberOfNotes) {
     return true;
   }
-  if (_noteStates[numberOfNotes - 1] != PYROBAR_FIRE_NOTE_FINISHED_STATE) {
+
+  if (_noteStates[numberOfNotes - 1] != PYROBAR_FIRE_NOTE_FINISHED_STATE || !allCannonsAreOff()) {
     return true;
   } else {
     reset();
+    return false;
   }
 }
 
@@ -78,10 +80,12 @@ bool PyrobarFireController::noteAtIndexExpired(int index) {
 }
 
 void PyrobarFireController::turnOnNoteAtIndex(int index) {
-  int pin = _fireCannonPins[_sequence->cannonAtIndex(index)];
+  int cannon = _sequence->cannonAtIndex(index);
+  int pin = _fireCannonPins[cannon];
   digitalWrite(pin, HIGH);
   _actualNoteStartTimes[index] = _currentSequenceTime;
   _noteStates[index] = PYROBAR_FIRE_NOTE_UNFINISHED_STATE;
+  _cannonsOn[cannon] = true;
 
   if (DEBUG_FIRE_SEQUENCE) {
     Serial.print("STARTing cannon on pin ");
@@ -91,10 +95,19 @@ void PyrobarFireController::turnOnNoteAtIndex(int index) {
   }
 }
 
+bool PyrobarFireController::allCannonsAreOff(void) {
+  for (int i = 0; i < CANNON_COUNT; i++) {
+    if (_cannonsOn[i]) return false;
+  }
+  return true;
+}
+
 void PyrobarFireController::turnOffNoteAtIndex(int index) {
-  int pin = _fireCannonPins[_sequence->cannonAtIndex(index)];
+  int cannon = _sequence->cannonAtIndex(index);
+  int pin = _fireCannonPins[cannon];
   digitalWrite(pin, LOW);
   _noteStates[index] = PYROBAR_FIRE_NOTE_FINISHED_STATE;
+  _cannonsOn[cannon] = false;
 
   if (DEBUG_FIRE_SEQUENCE) {
     Serial.print("STOPping cannon on pin ");
