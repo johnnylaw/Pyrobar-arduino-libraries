@@ -1,21 +1,20 @@
 #pragma once
 
-#define MAX_NOTES 70
+#define MAX_NOTES 512
 
 class PyrobarFireSequence {
   public:
     PyrobarFireSequence(void);
 
   private:
-    unsigned int _startTimes[MAX_NOTES];
+    unsigned long _startTimes[MAX_NOTES];
     unsigned int _durations[MAX_NOTES];
     int _cannons[MAX_NOTES];
     unsigned int _noteIndex;
-    unsigned int _numberOfNotes;
 
   public:
-    void addNote(int cannon, unsigned int startTime, unsigned int duration);
-    void setNumberOfNotes(unsigned int numberOfNotes);
+    void addNote(int cannon, unsigned long startTime, unsigned int duration);
+    void reset(void);
     unsigned int numberOfNotes();
     int cannonAtIndex(int index);
     unsigned int durationAtIndex(int index);

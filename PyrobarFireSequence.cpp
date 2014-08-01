@@ -1,25 +1,22 @@
 #include <Arduino.h>
 #include "PyrobarFireSequence.h"
 
-PyrobarFireSequence::PyrobarFireSequence(void) : _noteIndex(0), _numberOfNotes(0) {
+PyrobarFireSequence::PyrobarFireSequence(void) : _noteIndex(0) {
 }
 
-void PyrobarFireSequence::setNumberOfNotes(unsigned int numberOfNotes) {
-  _numberOfNotes = numberOfNotes;
+void PyrobarFireSequence::reset(void) {
   _noteIndex = 0;
 }
 
-void PyrobarFireSequence::addNote(int cannon, unsigned int startTime, unsigned int duration) {
-  if (_noteIndex <= _numberOfNotes) {
-    _cannons[_noteIndex] = cannon;
-    _startTimes[_noteIndex] = startTime;
-    _durations[_noteIndex] = duration;
-    _noteIndex++;
-  }
+void PyrobarFireSequence::addNote(int cannon, unsigned long startTime, unsigned int duration) {
+  _cannons[_noteIndex] = cannon;
+  _startTimes[_noteIndex] = startTime;
+  _durations[_noteIndex] = duration;
+  _noteIndex++;
 }
 
 unsigned int PyrobarFireSequence::numberOfNotes(void) {
-  return _numberOfNotes;
+  return _noteIndex;
 }
 
 int PyrobarFireSequence::cannonAtIndex(int index) {
