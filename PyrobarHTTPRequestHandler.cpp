@@ -122,5 +122,39 @@ bool PyrobarHTTPRequestHandler::handleScalar(EthernetClient client) {
 }
 
 bool PyrobarHTTPRequestHandler::handleFireSequence(EthernetClient client) {
-  // E.g. /fire/012341234012341234012341234
+  // E.g. /fire/00000af90000aa..
+  // _fireSequence->addNote(int cannon, unsigned long startTime, unsigned int duration);
+  if (DEBUG_HTTP) Serial.println("Incoming fire sequence...");
+  bool finished = false;
+  char cannonHex[3] = "0";
+  char startTimeHex[6] = "00000";
+  char durationHex[5] = "0000";
+  while (!finished) {
+    for (int i = 0; i < 1; i++) {
+      cannonHex[i] = client.read();
+      if (cannonHex[i] == ' ') finished = true;
+    }
+    for (int i = 0; i < 5; i++) {
+      startTimeHex[i] = client.read();
+      if (startTimeHex[i] == ' ') finished = true;
+    }
+    for (int i = 0; i < 4; i++) {
+      durationHex[i] = client.read();
+      if (durationHex[i] == ' ') finished = true;
+    }
+    if (!finished) {
+      int cannon = strtoul(cannonHex, NULL, 16);
+      unsigned long startTime = strtoul(startTimeHex, NULL, 16);
+      unsigned int duration = strtoul(durationHex, NULL, 16);
+      _fireSequence->addNote(cannon, startTime, duration);
+      if (DEBUG_HTTP) {
+        Serial.print("Cannon: ");
+        Serial.print(cannon);
+        Serial.print(", start time: ");
+        Serial.print(startTime);
+        Serial.print(", duration: ");
+        Serial.println(duration);
+      }
+    }
+  }
 }
