@@ -6,13 +6,19 @@ PyrobarFireSequence::PyrobarFireSequence(void) : _noteIndex(0) {
 
 void PyrobarFireSequence::reset(void) {
   _noteIndex = 0;
+  for (int i = 0; i < CANNON_COUNT; i++) {
+    _cannonsAlive[i] = true;
+  }
 }
 
 void PyrobarFireSequence::addNote(int cannon, unsigned long startTime, unsigned int duration) {
-  _cannons[_noteIndex] = cannon;
-  _startTimes[_noteIndex] = startTime;
-  _durations[_noteIndex] = duration;
-  _noteIndex++;
+  if (cannon < CANNON_COUNT) {
+    _cannonsAlive[cannon] = true;
+    _cannons[_noteIndex] = cannon;
+    _startTimes[_noteIndex] = startTime;
+    _durations[_noteIndex] = min(MAX_FIRE_DURATION, duration);
+    _noteIndex++;
+  }
 }
 
 unsigned int PyrobarFireSequence::numberOfNotes(void) {
@@ -28,5 +34,12 @@ unsigned int PyrobarFireSequence::startTimeAtIndex(int index) {
 }
 
 unsigned int PyrobarFireSequence::durationAtIndex(int index) {
-  return _durations[index];
+  if (_cannonsAlive[_cannons[index]]) {
+    return _durations[index];
+  }
+  return 0;
+}
+
+void PyrobarFireSequence::kill(int cannonIndex) {
+  _cannonsAlive[cannonIndex] = false;
 }
