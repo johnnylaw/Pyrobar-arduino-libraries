@@ -5,8 +5,10 @@
 #define DEBUG_REQUEST_HANDLER false
 #define DEBUG_LIGHT_MAP false
 #define DEBUG_UDP false
+#define DEBUG_HTTP false
 #define DEBUG_LIGHT_OUTPUT false
 #define DEBUG_PULSE_LIGHT false
+#define DEBUG_FIRE_SEQUENCE false
 
 #define UDP_TX_PACKET_MAX_SIZE 12
 #define TOTAL_ZONE_COUNT 9
@@ -16,6 +18,7 @@
 #define UDP_FIRE_OFF 1
 #define UDP_PULSE_LIGHT_ON 2
 #define UDP_PULSE_LIGHTS_DECAY_ON 3
+#define UDP_FREQUENCY_SYNC 4
 
 #define ON true
 #define OFF false
