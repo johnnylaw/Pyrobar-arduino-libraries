@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "PyrobarFireController.h"
+#include "PyrobarConstants.h"
 
 PyrobarFireController::PyrobarFireController(int numberOfCannons, uint8_t *fireCannonPins, PyrobarFireSequence *sequence) : _sequence(sequence), _numberOfCannons(numberOfCannons), _fireCannonPins(fireCannonPins) {
 }
@@ -7,6 +8,10 @@ PyrobarFireController::PyrobarFireController(int numberOfCannons, uint8_t *fireC
 void PyrobarFireController::begin(void) {
   for (int i = 0; i < _numberOfCannons; i++) {
     pinMode(_fireCannonPins[i], OUTPUT);
+    if (DEBUG_FIRE_SEQUENCE) {
+      Serial.print("Setting pinMode to OUTPUT on pin: ");
+      Serial.println(_fireCannonPins[i]);
+    }
   }
   reset();
 }
@@ -19,38 +24,97 @@ bool PyrobarFireController::play() {
     _startTime = millis();
   }
 
-  unsigned long currentSequenceTime = millis() - _startTime;
+  _currentSequenceTime = millis() - _startTime;
 
-  while (_nextNoteIndex < numberOfNotes && _sequence->startTimeAtIndex(_nextNoteIndex) <= currentSequenceTime) {
-    digitalWrite(_fireCannonPins[_sequence->cannonAtIndex(_nextNoteIndex)], HIGH);
-    _actualNoteStartTimes[_nextNoteIndex] = currentSequenceTime;
-    _noteStates[_nextNoteIndex] = PYROBAR_FIRE_NOTE_UNFINISHED_STATE;
+  while (_nextNoteIndex < numberOfNotes && shouldStartNoteAtIndex(_nextNoteIndex)) {
+    turnOnNoteAtIndex(_nextNoteIndex);
     _nextNoteIndex++;
   }
 
-  int i = 0;
-  while (i < _nextNoteIndex) {
-    if(_noteStates[i] != PYROBAR_FIRE_NOTE_FINISHED_STATE && _sequence->durationAtIndex(i) + _actualNoteStartTimes[i] <= currentSequenceTime) {
-      digitalWrite(_fireCannonPins[_sequence->cannonAtIndex(i)], LOW);
-      _noteStates[i] = PYROBAR_FIRE_NOTE_FINISHED_STATE;
+  for (int i = 0; i < _nextNoteIndex; i++) {
+    if(shouldStopNoteAtIndex(i)) {
+      turnOffNoteAtIndex(i);
     }
-    i++;
   }
-  return _nextNoteIndex < numberOfNotes || _noteStates[numberOfNotes - 1] != PYROBAR_FIRE_NOTE_FINISHED_STATE;
+
+  if (_nextNoteIndex < numberOfNotes) {
+    return true;
+  }
+  if (_noteStates[numberOfNotes - 1] != PYROBAR_FIRE_NOTE_FINISHED_STATE) {
+    return true;
+  } else {
+    reset();
+  }
 }
 
 void PyrobarFireController::reset() {
   _nextNoteIndex = 0;
   _startTime = NULL;
+  _sequence->reset();
+  killAll();
+}
+
+void PyrobarFireController::killAll(void) {
+  for (int i = 0; i < _numberOfCannons; i++) {
+    digitalWrite(_fireCannonPins[i], LOW);
+  }
+}
+
+bool PyrobarFireController::shouldStartNoteAtIndex(int index) {
+  return _sequence->startTimeAtIndex(index) <= _currentSequenceTime;
+}
+
+bool PyrobarFireController::shouldStopNoteAtIndex(int index) {
+   return noteAtIndexStillGoing(index) && noteAtIndexExpired(index);
+}
+
+bool PyrobarFireController::noteAtIndexStillGoing(int index) {
+  return _noteStates[index] != PYROBAR_FIRE_NOTE_FINISHED_STATE;
+}
+
+bool PyrobarFireController::noteAtIndexExpired(int index) {
+  unsigned long elapsedTime = _currentSequenceTime - _actualNoteStartTimes[index];
+  return elapsedTime >= _sequence->durationAtIndex(index);
+}
+
+void PyrobarFireController::turnOnNoteAtIndex(int index) {
+  int pin = _fireCannonPins[_sequence->cannonAtIndex(index)];
+  digitalWrite(pin, HIGH);
+  _actualNoteStartTimes[index] = _currentSequenceTime;
+  _noteStates[index] = PYROBAR_FIRE_NOTE_UNFINISHED_STATE;
+
+  if (DEBUG_FIRE_SEQUENCE) {
+    Serial.print("STARTing cannon on pin ");
+    Serial.print(pin);
+    Serial.print(" after ");
+    Serial.println(_sequence->startTimeAtIndex(index));
+  }
+}
+
+void PyrobarFireController::turnOffNoteAtIndex(int index) {
+  int pin = _fireCannonPins[_sequence->cannonAtIndex(index)];
+  digitalWrite(pin, LOW);
+  _noteStates[index] = PYROBAR_FIRE_NOTE_FINISHED_STATE;
+
+  if (DEBUG_FIRE_SEQUENCE) {
+    Serial.print("STOPping cannon on pin ");
+    Serial.print(pin);
+    Serial.print(" after ");
+    Serial.println(_sequence->startTimeAtIndex(index));
+  }
 }
 
 void PyrobarFireController::dumpSequence() {
-  for (int i = 0; i < _sequence->numberOfNotes(); i++) {
-    unsigned int startTime = _sequence->startTimeAtIndex(i);
-    Serial.print("NOTE "); Serial.print(i);
-    Serial.print(" on pin "); Serial.print(_sequence->cannonAtIndex(i));
-    Serial.print(" from "); Serial.print(startTime);
-    Serial.print(" for "); Serial.print(_sequence->durationAtIndex(i));
-    Serial.println(" ms");
+  if (DEBUG_FIRE_SEQUENCE) {
+    Serial.print("NUMBER OF NOTES: ");
+    Serial.println(_sequence->numberOfNotes());
+    for (int i = 0; i < _sequence->numberOfNotes(); i++) {
+      unsigned int startTime = _sequence->startTimeAtIndex(i);
+      Serial.print("NOTE "); Serial.print(i);
+      Serial.print(" on pin "); Serial.print(_fireCannonPins[_sequence->cannonAtIndex(i)]);
+      Serial.print(" from "); Serial.print(startTime);
+      Serial.print(" for "); Serial.print(_sequence->durationAtIndex(i));
+      Serial.println(" ms");
+    }
   }
 }

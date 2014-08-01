@@ -2,8 +2,8 @@
 
 #include "PyrobarFireSequence.h"
 
-#define PYROBAR_FIRE_NOTE_UNFINISHED_STATE 0
-#define PYROBAR_FIRE_NOTE_FINISHED_STATE 1
+#define PYROBAR_FIRE_NOTE_UNFINISHED_STATE false
+#define PYROBAR_FIRE_NOTE_FINISHED_STATE true
 
 class PyrobarFireController {
   public:
@@ -14,9 +14,10 @@ class PyrobarFireController {
     int _numberOfCannons;
     uint8_t *_fireCannonPins;
     unsigned long _startTime;
-    unsigned char _noteStates[MAX_NOTES];
-    unsigned int _actualNoteStartTimes[MAX_NOTES];
+    bool _noteStates[MAX_NOTES];
+    unsigned long _actualNoteStartTimes[MAX_NOTES];
     int _nextNoteIndex;
+    unsigned long _currentSequenceTime;
 
   public:
     void begin(void);
@@ -25,4 +26,12 @@ class PyrobarFireController {
 
   private:
     void dumpSequence();
+    bool shouldStartNoteAtIndex(int index);
+    bool shouldStopNoteAtIndex(int index);
+    bool noteAtIndexStillGoing(int index);
+    bool noteAtIndexExpired(int index);
+    void turnOnNoteAtIndex(int index);
+    void turnOffNoteAtIndex(int index);
+    void killAll(void);
+
 };
