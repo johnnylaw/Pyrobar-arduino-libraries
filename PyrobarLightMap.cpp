@@ -1,7 +1,7 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightMap.h"
 
-PyrobarLightMap::PyrobarLightMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(0.0), _allOff(true) {
+PyrobarLightMap::PyrobarLightMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(1.0), _allOff(true) {
   resetWritePtr();
 }
 

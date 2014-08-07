@@ -10,6 +10,7 @@
 #define DEBUG_LIGHT_OUTPUT false
 #define DEBUG_PULSE_LIGHT false
 #define DEBUG_FIRE_SEQUENCE false
+#define DEBUG_SOUND_LEVEL false
 
 #define UDP_TX_PACKET_MAX_SIZE 8
 #define TOTAL_ZONE_COUNT 9
@@ -23,6 +24,12 @@
 #define UDP_FREQUENCY_SYNC 4
 
 #define MAX_FIRE_DURATION 5000  // ms
+
+#define MIN_INCOMING_SOUND_LEVEL_VALUE
+#define MAX_INCOMING_SOUND_LEVEL_VALUE
+const float minIncomingSoundLevelValue = 185.0; // ~0.6V
+const float maxIncomingSoundLevelValue = 775.0; // ~2.5V
+const float soundLevelRange = maxIncomingSoundLevelValue - minIncomingSoundLevelValue;
 
 #define ON true
 #define OFF false

@@ -1,8 +1,9 @@
 #include <Wire.h>
 #include "PyrobarConstants.h"
 #include "PyrobarLightMaster.h"
+#include "PololuLedStrip.h"
 
-PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _ledPins(ledPins) {
+PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins, uint8_t soundLevelPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _ledPins(ledPins), _soundLevelPin(soundLevelPin) {
   _numberOfSlaves = (TOTAL_ZONE_COUNT - 1) / ZONES_PER_SLAVE_BOARD;
 }
 
@@ -56,6 +57,7 @@ void PyrobarLightMaster::begin(void) {
   for (int i = 0; i < sizeof(_ledPins); i++) {
     pinMode(_ledPins[i], OUTPUT);
   }
+  pinMode(_soundLevelPin, INPUT);
 }
 
 void PyrobarLightMaster::calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos) {
@@ -75,4 +77,16 @@ void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
 
 void PyrobarLightMaster::calculateSoundBufferPosition(uint8_t *sndBfrPos) {
   *sndBfrPos = 0;
+  float pinLevel = analogRead(_soundLevelPin);
+  float fraction = _lightMap->soundSensitivity() * (pinLevel - minIncomingSoundLevelValue) / soundLevelRange;
+  *sndBfrPos = min( 15.0,
+    max(16.0 * fraction, 0)
+  );
+
+  if (DEBUG_SOUND_LEVEL) {
+    Serial.print("Sound pin level: ");
+    Serial.print(pinLevel);
+    Serial.print(", buffer position: ");
+    Serial.println(*sndBfrPos);
+  }
 }

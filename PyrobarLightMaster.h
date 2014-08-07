@@ -9,7 +9,7 @@
 
 class PyrobarLightMaster {
 public:
-  PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins);
+  PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins, uint8_t soundLevelPin);
 
 private:
   float _lastCyclePosition;
@@ -18,6 +18,8 @@ private:
   PyrobarPulseLightSet *_pulseLightSet;
   int _numberOfSlaves;
   uint8_t *_ledPins;
+  uint8_t _soundLevelPin;
+  uint16_t _stripBuffer[120];
 
 public:
   void calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos);
