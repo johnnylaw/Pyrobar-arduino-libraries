@@ -1,6 +1,14 @@
 #ifndef _PYROBAR_CONSTANTS_H
 #define _PYROBAR_CONSTANTS_H
 
+#include <Arduino.h>
+#include <math.h>
+#include "PololuLedStrip.h"
+
+// #define SLAVE1 // if not, Slave is assumed as 0 when compiling slave sketch
+
+#define BASE_I2C_ADDRESS 0x10
+
 #define _DEBUG true
 #define DEBUG_REQUEST_HANDLER false
 #define DEBUG_LIGHT_MAP false
@@ -13,7 +21,7 @@
 #define DEBUG_SOUND_LEVEL false
 
 #define UDP_TX_PACKET_MAX_SIZE 8
-#define TOTAL_ZONE_COUNT 9
+#define TOTAL_ZONE_COUNT 10
 #define COLOR_COUNT 3
 #define CANNON_COUNT 3
 
@@ -22,16 +30,39 @@
 #define UDP_PULSE_LIGHT_ON 2
 #define UDP_PULSE_LIGHTS_DECAY_ON 3
 #define UDP_FREQUENCY_SYNC 4
+#define UDP_LIGHT_BALL 5
+
+typedef enum udpMode {
+  FIRE_ON, FIRE_OFF, PULSE_LIGHT_ON, PULSE_LIGHTS_DECAY_ON, FREQUENCY_SYNC, LIGHT_BALL
+} UDPMode;
 
 #define MAX_FIRE_DURATION 5000  // ms
 
-#define MIN_INCOMING_SOUND_LEVEL_VALUE
-#define MAX_INCOMING_SOUND_LEVEL_VALUE
 const float minIncomingSoundLevelValue = 185.0; // ~0.6V
 const float maxIncomingSoundLevelValue = 775.0; // ~2.5V
 const float soundLevelRange = maxIncomingSoundLevelValue - minIncomingSoundLevelValue;
 
 #define ON true
 #define OFF false
+
+typedef enum lightMode {
+  PROGRAM, BALL_DRAG
+} LightMode;
+
+typedef struct LightZoneInfo {
+  uint8_t strip;
+  uint16_t start,        // first index
+           count;        // number of distinct addresses
+  boolean isSymmetrical;
+} LightZoneInfo;
+
+typedef struct Location {
+  uint8_t x, y;
+} Location;
+
+typedef struct Pixel {
+  Location location;
+  rgb_color lastColor;
+} Pixel;
 
 #endif
