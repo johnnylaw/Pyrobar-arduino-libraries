@@ -61,11 +61,13 @@ void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
 
 void PyrobarLightMaster::calculateSoundBufferPosition(uint8_t *sndBfrPos) {
   *sndBfrPos = 0;
-  float pinLevel = analogRead(_soundLevelPin);
-  float fraction = _lightMap->soundSensitivity() * (pinLevel - minIncomingSoundLevelValue) / soundLevelRange;
-  *sndBfrPos = min( 15.0,
-    max(16.0 * fraction, 0)
-  );
+  // float pinLevel = analogRead(_soundLevelPin);
+  // float fraction = _lightMap->soundSensitivity() * (pinLevel - minIncomingSoundLevelValue) / soundLevelRange;
+  // *sndBfrPos = min( 15.0,
+  //   max(16.0 * fraction, 0)
+  // );
+  // sndBfrPos = digitalRead(_soundLevelPin) ? 15 : 0;
+  sndBfrPos = 0;
 
   if (DEBUG_SOUND_LEVEL) {
     Serial.print("Sound pin level: ");
