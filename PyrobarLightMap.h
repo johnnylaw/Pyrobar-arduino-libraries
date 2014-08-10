@@ -23,7 +23,11 @@ const char pyrobarDataTypeBuffer[] = "bfr";
 const char pyrobarBfrTypeSnd[] = "sound";
 const char pyrobarBfrTypeFreq[] = "frequency";
 
+const char pyrobarDataTypeAerialSpotlight[] = "aerial-spot";
+const char pyrobarDataTypeCraneSpotLights[] = "crane-spot";
+const char pyrobarDataTypeMainLights[] = "main";
 const char pyrobarDataTypeLights[] = "lights";
+
 const char pyrobarLightsOut[] = "out";
 const char pyrobarLightsOn[] = "on";
 
@@ -44,7 +48,9 @@ private:
   int _bfrWritePtr[3];
   float _frequency;
   float _soundSensitivity;
-  bool _allOff;
+  bool _mainOff;
+  bool _craneSpotLightsOn;
+  bool _aerialSpotLightOn;
 
 public:
   bool write(String type, int zone, uint8_t value);
@@ -54,7 +60,7 @@ public:
   float soundSensitivity(void);
   bool setScalar(String type, float value);
   bool shouldDisplay(void);
-  void turnLights(bool on);
+  void turnLights(String type, bool on);
 
 private:
   void resetWritePtr(void);

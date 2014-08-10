@@ -58,13 +58,14 @@ bool PyrobarHTTPRequestHandler::parseRequest(EthernetClient client) {
 }
 
 bool PyrobarHTTPRequestHandler::handleLightsOnOff(EthernetClient client) {
+  String type = client.readStringUntil('/');
   String instruction = client.readStringUntil(' ');
   if (DEBUG_REQUEST_HANDLER) {
     Serial.print("Turning lights ");
     Serial.println(instruction);
   }
-  if (instruction == pyrobarLightsOut) _lightMap->turnLights(OFF);
-  else if (instruction == pyrobarLightsOn) _lightMap->turnLights(ON);
+  if (instruction == pyrobarLightsOut) _lightMap->turnLights(type, OFF);
+  else if (instruction == pyrobarLightsOn) _lightMap->turnLights(type, ON);
   else return false;
   return true;
 }

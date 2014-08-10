@@ -25,7 +25,7 @@ void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) 
       }
       break;
     case UDP_PULSE_LIGHT_ON:
-      _lightMap->turnLights(OFF);
+      _lightMap->turnLights(pyrobarDataTypeMainLights, OFF);
       if (length == 6) decay = buffer[5];
       _pulseLightSet->pulse(buffer[1], buffer[2], buffer[3], buffer[4], decay);
 
@@ -49,6 +49,9 @@ void PyrobarUDPRequestHandler::handleRequest(unsigned char *buffer, int length) 
         Serial.print("Starting decay all: ");
         Serial.println(buffer[1]);
       }
+      break;
+    case UDP_LIGHT_BALL:  // need to write info to a buffer and send next loop
+      _lightMap->turnLights(pyrobarDataTypeMainLights, OFF);
       break;
     default:
       break;

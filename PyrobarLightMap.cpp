@@ -1,12 +1,11 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightMap.h"
 
-PyrobarLightMap::PyrobarLightMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(1.0), _allOff(true) {
+PyrobarLightMap::PyrobarLightMap() : _frequency((float)DEFAULT_FREQUENCY / 1000.0), _soundSensitivity(1.0), _mainOff(true) {
   resetWritePtr();
 }
 
 bool PyrobarLightMap::write(String type, int zone, uint8_t value) {
-  _allOff = false;
   int bfrLength;
   if (zone != _bfrWritePtr[0] || _bfrWritePtr[2] >= COLOR_COUNT) {
     resetWritePtr();
@@ -130,10 +129,18 @@ bool PyrobarLightMap::setScalar(String type, float value) {
   return true;
 }
 
-void PyrobarLightMap::turnLights(bool on) {
-  _allOff = !on;
+void PyrobarLightMap::turnLights(String type, bool on) {
+  bool _craneSpotLightsOn;
+  bool _aerialSpotLightOn;
+  if (type == pyrobarDataTypeMainLights) {
+    _mainOff = !on;
+  } else if (type == pyrobarDataTypeAerialSpotlight) {
+    _aerialSpotLightOn = !on;
+  } else if (type == pyrobarDataTypeCraneSpotLights) {
+    _craneSpotLightsOn = !on;
+  }
 }
 
 bool PyrobarLightMap::shouldDisplay(void) {
-  return !_allOff;
+  return !_mainOff;
 }

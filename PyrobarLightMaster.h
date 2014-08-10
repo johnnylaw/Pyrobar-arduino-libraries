@@ -17,7 +17,6 @@ private:
   PyrobarLightMap *_lightMap;
   PyrobarPulseLightSet *_pulseLightSet;
   int _numberOfSlaves;
-  uint8_t *_ledPins;
   uint8_t _soundLevelPin;
   uint16_t _stripBuffer[120];
 
