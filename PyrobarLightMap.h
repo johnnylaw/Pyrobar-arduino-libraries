@@ -24,7 +24,7 @@ const char pyrobarBfrTypeSnd[] = "sound";
 const char pyrobarBfrTypeFreq[] = "frequency";
 
 const char pyrobarDataTypeAerialSpotlight[] = "aerial-spot";
-const char pyrobarDataTypeCraneSpotLights[] = "crane-spot";
+const char pyrobarDataTypeCraneSpotlights[] = "crane-spot";
 const char pyrobarDataTypeMainLights[] = "main";
 const char pyrobarDataTypeLights[] = "lights";
 
@@ -61,6 +61,7 @@ public:
   bool setScalar(String type, float value);
   bool shouldDisplay(void);
   void turnLights(String type, bool on);
+  bool lightIsOn(String type);
 
 private:
   void resetWritePtr(void);

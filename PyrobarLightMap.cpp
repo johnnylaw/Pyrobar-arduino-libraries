@@ -136,11 +136,19 @@ void PyrobarLightMap::turnLights(String type, bool on) {
     _mainOff = !on;
   } else if (type == pyrobarDataTypeAerialSpotlight) {
     _aerialSpotLightOn = !on;
-  } else if (type == pyrobarDataTypeCraneSpotLights) {
+  } else if (type == pyrobarDataTypeCraneSpotlights) {
     _craneSpotLightsOn = !on;
   }
 }
 
 bool PyrobarLightMap::shouldDisplay(void) {
   return !_mainOff;
+}
+
+bool PyrobarLightMap::lightIsOn(String type) {
+  if (type == pyrobarDataTypeCraneSpotlights) {
+    return _aerialSpotLightOn;
+  } else if (type == pyrobarDataTypeAerialSpotlight) {
+    return _craneSpotLightsOn;
+  }
 }

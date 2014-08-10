@@ -2,7 +2,7 @@
 #include "PyrobarConstants.h"
 #include "PyrobarLightMaster.h"
 
-PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins, uint8_t soundLevelPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _soundLevelPin(soundLevelPin) {
+PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t soundLevelPin, uint8_t aerialSpotLightPin, uint8_t craneSpotLightPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _soundLevelPin(soundLevelPin), _aerialSpotLightPin(aerialSpotLightPin), _craneSpotLightPin(craneSpotLightPin) {
   _numberOfSlaves = (TOTAL_ZONE_COUNT - 1) / ZONES_PER_SLAVE_BOARD;
 }
 
@@ -32,11 +32,16 @@ void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfr
   }
 
   Wire.endTransmission();
+
+  digitalWrite(_aerialSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeAerialSpotlight) ? HIGH : LOW);
+  digitalWrite(_craneSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeCraneSpotlights) ? HIGH : LOW);
 }
 
 void PyrobarLightMaster::begin(void) {
   Wire.begin();
   pinMode(_soundLevelPin, INPUT);
+  pinMode(_aerialSpotLightPin, OUTPUT);
+  pinMode(_craneSpotLightPin, OUTPUT);
 }
 
 void PyrobarLightMaster::calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos) {
