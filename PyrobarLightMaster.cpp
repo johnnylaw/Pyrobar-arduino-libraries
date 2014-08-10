@@ -1,7 +1,6 @@
 #include <Wire.h>
 #include "PyrobarConstants.h"
 #include "PyrobarLightMaster.h"
-#include "PololuLedStrip.h"
 
 PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t *ledPins, uint8_t soundLevelPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _soundLevelPin(soundLevelPin) {
   _numberOfSlaves = (TOTAL_ZONE_COUNT - 1) / ZONES_PER_SLAVE_BOARD;
