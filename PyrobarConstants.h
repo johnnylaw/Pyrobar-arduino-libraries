@@ -2,8 +2,6 @@
 #define _PYROBAR_CONSTANTS_H
 
 #include <Arduino.h>
-#include <math.h>
-#include "PololuLedStrip.h"
 
 // #define SLAVE1 // if not, Slave is assumed as 0 when compiling slave sketch
 
@@ -48,21 +46,5 @@ const float soundLevelRange = maxIncomingSoundLevelValue - minIncomingSoundLevel
 typedef enum lightMode {
   PROGRAM, BALL_DRAG
 } LightMode;
-
-typedef struct LightZoneInfo {
-  uint8_t strip;
-  uint16_t start,        // first index
-           count;        // number of distinct addresses
-  boolean isSymmetrical;
-} LightZoneInfo;
-
-typedef struct Location {
-  uint8_t x, y;
-} Location;
-
-typedef struct Pixel {
-  Location location;
-  rgb_color lastColor;
-} Pixel;
 
 #endif
