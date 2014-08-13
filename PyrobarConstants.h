@@ -3,8 +3,6 @@
 
 #include <Arduino.h>
 
-// #define SLAVE1 // if not, Slave is assumed as 0 when compiling slave sketch
-
 #define BASE_I2C_ADDRESS 0x10
 
 #define _DEBUG true
