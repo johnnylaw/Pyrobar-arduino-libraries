@@ -3,7 +3,13 @@
 
 #include <Arduino.h>
 
+typedef struct SlaveZoneAddresses {
+  uint8_t low, high;
+} SlaveZoneAddresses;
+
 #define BASE_I2C_ADDRESS 0x10
+const uint8_t numberOfSlaves = 2;
+const SlaveZoneAddresses slaveZoneAddresses[2] = {{0, 7}, {8, 9}};
 
 #define _DEBUG true
 #define DEBUG_REQUEST_HANDLER false
@@ -11,7 +17,8 @@
 #define DEBUG_UDP false
 #define DEBUG_UDP_FIRE false
 #define DEBUG_HTTP false
-#define DEBUG_LIGHT_OUTPUT false
+// #define DEBUG_LIGHT_OUTPUT
+// #define DEBUG_LIGHT_VALUE_OUTPUT
 #define DEBUG_PULSE_LIGHT false
 #define DEBUG_FIRE_SEQUENCE false
 #define DEBUG_SOUND_LEVEL false

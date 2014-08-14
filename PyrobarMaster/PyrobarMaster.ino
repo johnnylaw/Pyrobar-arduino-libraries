@@ -1,7 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
-//#include <Wire.h>
+#include <Wire.h>
 #include "PyrobarConstants.h"
 #include "PyrobarFireCannon.h"
 #include "PyrobarLightMaster.h"
@@ -39,7 +39,7 @@ static PyrobarFireController FireCtrl = PyrobarFireController(CANNON_COUNT, fire
 EthernetServer server(80);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Ethernet.begin(mac, ip);
   Udp.begin(localPortUDP);
   MasterCtrl.begin();
@@ -47,6 +47,7 @@ void setup() {
   pinMode(53, INPUT);
 
   Serial.println(Ethernet.localIP());
+  delay(1000);
 }
 
 void loop() {
@@ -58,7 +59,7 @@ void loop() {
     Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
     PBUDPRequestHandler.handleRequest(packetBuffer, packetSize);
   }
-  
+
   if(digitalRead(53) && _DEBUG) {
     printDiagnostics();
   }
@@ -67,9 +68,9 @@ void loop() {
     if (EthernetClient client = server.available()) {
       if (_DEBUG) Serial.println("\nClient exists!");
       PBHTTPRequestHandler.handleRequest(client);
-    } 
+    }
   }
-  
+
   MasterCtrl.calculateBufferPositions(&freqBfrPos, &sndBfrPos);
   MasterCtrl.sendLightProgramInfo(freqBfrPos, sndBfrPos);
 
@@ -102,8 +103,8 @@ void printDiagnostics() {
       Serial.print(")\t");
     }
     Serial.println();
-  }  
-  
+  }
+
   Serial.print("Sound senstivity: ");
   Serial.print(lightMap.soundSensitivity());
   Serial.print(", Frequency: ");

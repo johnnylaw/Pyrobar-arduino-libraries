@@ -3,36 +3,12 @@
 #include "PyrobarLightMaster.h"
 
 PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t soundLevelPin, uint8_t aerialSpotLightPin, uint8_t craneSpotLightPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _soundLevelPin(soundLevelPin), _aerialSpotLightPin(aerialSpotLightPin), _craneSpotLightPin(craneSpotLightPin) {
-  _numberOfSlaves = (TOTAL_ZONE_COUNT - 1) / ZONES_PER_SLAVE_BOARD;
 }
 
 void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfrPos) {
-  uint8_t value;
-  Wire.beginTransmission(BASE_I2C_ADDRESS);
-
-  if (DEBUG_LIGHT_OUTPUT) {
-    Serial.print("Transmitting to ");
-    Serial.println(BASE_I2C_ADDRESS);
+  for (int slaveInd = 0; slaveInd < numberOfSlaves; slaveInd++) {
+    sendSlaveInfo(slaveInd, freqBfrPos, sndBfrPos);
   }
-
-  for (int zoneInd = 0; zoneInd < TOTAL_ZONE_COUNT; zoneInd++) {
-    for (int colorInd = 0; colorInd < COLOR_COUNT; colorInd++) {
-      if (_lightMap->shouldDisplay()) {
-        uint8_t freqValue = _lightMap->read(pyrobarBfrTypeFreq, zoneInd, freqBfrPos, colorInd);
-        uint8_t sndValue = _lightMap->read(pyrobarBfrTypeSnd, zoneInd, sndBfrPos, colorInd);
-        value = max(freqValue, sndValue);
-      } else {
-        value = _pulseLightSet->read(zoneInd, colorInd);
-      }
-      if (DEBUG_LIGHT_OUTPUT && zoneInd == 0) {
-        Serial.println(value);
-      }
-      Wire.write(value);
-    }
-  }
-
-  Wire.endTransmission();
-
   digitalWrite(_aerialSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeAerialSpotlight) ? HIGH : LOW);
   digitalWrite(_craneSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeCraneSpotlights) ? HIGH : LOW);
 }
@@ -50,6 +26,47 @@ void PyrobarLightMaster::calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *
 }
 
 // private
+void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uint8_t sndBfrPos) {
+  uint8_t value;
+#ifdef DEBUG_LIGHT_OUTPUT
+  int byteCounter = 0;
+#endif
+  Wire.beginTransmission(BASE_I2C_ADDRESS + slaveInd);
+
+  for (int zoneInd = slaveZoneAddresses[slaveInd].low; zoneInd <= slaveZoneAddresses[slaveInd].high; zoneInd++) {
+    for (int colorInd = 0; colorInd < COLOR_COUNT; colorInd++) {
+      if (_lightMap->shouldDisplay()) {
+        uint8_t freqValue = _lightMap->read(pyrobarBfrTypeFreq, zoneInd, freqBfrPos, colorInd);
+        uint8_t sndValue = _lightMap->read(pyrobarBfrTypeSnd, zoneInd, sndBfrPos, colorInd);
+        value = max(freqValue, sndValue);
+      } else {
+        value = _pulseLightSet->read(zoneInd, colorInd);
+      }
+#ifdef DEBUG_LIGHT_VALUE_OUTPUT
+      if (!slaveInd && !zoneInd) {
+        Serial.println(value);
+      }
+#endif
+      Wire.write(value);
+#ifdef DEBUG_LIGHT_OUTPUT
+      byteCounter++;
+#endif
+    }
+  }
+
+  Wire.endTransmission();
+#ifdef DEBUG_LIGHT_OUTPUT
+  Serial.print("Sent ");
+  Serial.print(byteCounter);
+  Serial.print(" bytes to ");
+  Serial.print(BASE_I2C_ADDRESS + slaveInd);
+  Serial.print(", zones ");
+  Serial.print(slaveZoneAddresses[slaveInd].low);
+  Serial.print(" thru ");
+  Serial.println(slaveZoneAddresses[slaveInd].high);
+#endif
+}
+
 void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
   float currentMillis = millis();
   float timeElapsed = currentMillis - _lastMillis;
@@ -61,18 +78,6 @@ void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
 
 void PyrobarLightMaster::calculateSoundBufferPosition(uint8_t *sndBfrPos) {
   *sndBfrPos = 0;
-  // float pinLevel = analogRead(_soundLevelPin);
-  // float fraction = _lightMap->soundSensitivity() * (pinLevel - minIncomingSoundLevelValue) / soundLevelRange;
-  // *sndBfrPos = min( 15.0,
-  //   max(16.0 * fraction, 0)
-  // );
   // sndBfrPos = digitalRead(_soundLevelPin) ? 15 : 0;
   sndBfrPos = 0;
-
-  if (DEBUG_SOUND_LEVEL) {
-    Serial.print("Sound pin level: ");
-    Serial.print(pinLevel);
-    Serial.print(", buffer position: ");
-    Serial.println(*sndBfrPos);
-  }
 }
