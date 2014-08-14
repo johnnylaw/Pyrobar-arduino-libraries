@@ -130,14 +130,12 @@ bool PyrobarLightMap::setScalar(String type, float value) {
 }
 
 void PyrobarLightMap::turnLights(String type, bool on) {
-  bool _craneSpotLightsOn;
-  bool _aerialSpotLightOn;
   if (type == pyrobarDataTypeMainLights) {
     _mainOff = !on;
   } else if (type == pyrobarDataTypeAerialSpotlight) {
-    _aerialSpotLightOn = !on;
+    _aerialSpotLightOn = on;
   } else if (type == pyrobarDataTypeCraneSpotlights) {
-    _craneSpotLightsOn = !on;
+    _craneSpotLightsOn = on;
   }
 }
 
@@ -147,8 +145,8 @@ bool PyrobarLightMap::shouldDisplay(void) {
 
 bool PyrobarLightMap::lightIsOn(String type) {
   if (type == pyrobarDataTypeCraneSpotlights) {
-    return _aerialSpotLightOn;
-  } else if (type == pyrobarDataTypeAerialSpotlight) {
     return _craneSpotLightsOn;
+  } else if (type == pyrobarDataTypeAerialSpotlight) {
+    return _aerialSpotLightOn;
   }
 }
