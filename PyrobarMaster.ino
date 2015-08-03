@@ -51,7 +51,7 @@ void setup() {
 }
 
 void loop() {
-  if (int packetSize = Udp.parsePacket()) {
+  while (int packetSize = Udp.parsePacket()) {
     if (DEBUG_UDP) {
       Serial.print("UDP packet received with packet size: ");
       Serial.println(packetSize);
@@ -61,7 +61,7 @@ void loop() {
   }
 
   if(digitalRead(53) && _DEBUG) {
-    printDiagnostics();
+//    printDiagnostics();
   }
 
   if (!FireCtrl.play()) {

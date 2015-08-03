@@ -32,6 +32,9 @@ void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uin
   int byteCounter = 0;
 #endif
   Wire.beginTransmission(BASE_I2C_ADDRESS + slaveInd);
+#ifdef DEBUG_LIGHT_VALUE_OUTPUT
+  Serial.println("\n\nZone0 output:");
+#endif
 
   for (int zoneInd = slaveZoneAddresses[slaveInd].low; zoneInd <= slaveZoneAddresses[slaveInd].high; zoneInd++) {
     for (int colorInd = 0; colorInd < COLOR_COUNT; colorInd++) {
@@ -44,7 +47,10 @@ void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uin
       }
 #ifdef DEBUG_LIGHT_VALUE_OUTPUT
       if (!slaveInd && !zoneInd) {
-        Serial.println(value);
+        Serial.print(value);
+        if (colorInd != 3) {
+          Serial.print(", ");
+        }
       }
 #endif
       Wire.write(value);
