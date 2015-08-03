@@ -5,9 +5,9 @@
 PyrobarLightMaster::PyrobarLightMaster(PyrobarLightMap *lightMap, PyrobarPulseLightSet *pulseLightSet, uint8_t soundLevelPin, uint8_t aerialSpotLightPin, uint8_t craneSpotLightPin) : _lastCyclePosition(0.0), _lightMap(lightMap), _pulseLightSet(pulseLightSet), _soundLevelPin(soundLevelPin), _aerialSpotLightPin(aerialSpotLightPin), _craneSpotLightPin(craneSpotLightPin) {
 }
 
-void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfrPos) {
+void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos) {
   for (int slaveInd = 0; slaveInd < numberOfSlaves; slaveInd++) {
-    sendSlaveInfo(slaveInd, freqBfrPos, sndBfrPos);
+    sendSlaveInfo(slaveInd, freqBfrPos);
   }
   digitalWrite(_aerialSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeAerialSpotlight) ? HIGH : LOW);
   digitalWrite(_craneSpotLightPin, _lightMap->lightIsOn(pyrobarDataTypeCraneSpotlights) ? HIGH : LOW);
@@ -15,18 +15,16 @@ void PyrobarLightMaster::sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfr
 
 void PyrobarLightMaster::begin(void) {
   Wire.begin();
-  pinMode(_soundLevelPin, INPUT);
   pinMode(_aerialSpotLightPin, OUTPUT);
   pinMode(_craneSpotLightPin, OUTPUT);
 }
 
-void PyrobarLightMaster::calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos) {
+void PyrobarLightMaster::calculateBufferPositions(uint8_t *freqBfrPos) {
   calculateFrequencyBufferPosition(freqBfrPos);
-  calculateSoundBufferPosition(sndBfrPos);
 }
 
 // private
-void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uint8_t sndBfrPos) {
+void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos) {
   uint8_t value;
 #ifdef DEBUG_LIGHT_OUTPUT
   int byteCounter = 0;
@@ -39,9 +37,7 @@ void PyrobarLightMaster::sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uin
   for (int zoneInd = slaveZoneAddresses[slaveInd].low; zoneInd <= slaveZoneAddresses[slaveInd].high; zoneInd++) {
     for (int colorInd = 0; colorInd < COLOR_COUNT; colorInd++) {
       if (_lightMap->shouldDisplay()) {
-        uint8_t freqValue = _lightMap->read(pyrobarBfrTypeFreq, zoneInd, freqBfrPos, colorInd);
-        uint8_t sndValue = _lightMap->read(pyrobarBfrTypeSnd, zoneInd, sndBfrPos, colorInd);
-        value = max(freqValue, sndValue);
+        value = _lightMap->read(pyrobarBfrTypeFreq, zoneInd, freqBfrPos, colorInd);
       } else {
         value = _pulseLightSet->read(zoneInd, colorInd);
       }
@@ -82,8 +78,3 @@ void PyrobarLightMaster::calculateFrequencyBufferPosition(uint8_t *freqBfrPos) {
   *freqBfrPos = (uint8_t)(_lastCyclePosition * BFR_SZ_FREQ);
 }
 
-void PyrobarLightMaster::calculateSoundBufferPosition(uint8_t *sndBfrPos) {
-  *sndBfrPos = 0;
-  // sndBfrPos = digitalRead(_soundLevelPin) ? 15 : 0;
-  sndBfrPos = 0;
-}

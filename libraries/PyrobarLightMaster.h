@@ -19,14 +19,13 @@ private:
   uint8_t _soundLevelPin;
 
 public:
-  void calculateBufferPositions(uint8_t *freqBfrPos, uint8_t *sndBfrPos);
-  void sendLightProgramInfo(uint8_t freqBfrPos, uint8_t sndBfrPos);
+  void calculateBufferPositions(uint8_t *freqBfrPos);
+  void sendLightProgramInfo(uint8_t freqBfrPos);
   void begin(void);
 
 private:
-  void sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos, uint8_t sndBfrPos);
+  void sendSlaveInfo(uint8_t slaveInd, uint8_t freqBfrPos);
   void calculateFrequencyBufferPosition(uint8_t *freqBfrPos);
-  void calculateSoundBufferPosition(uint8_t *sndBfrPos);
 };
 
 #endif

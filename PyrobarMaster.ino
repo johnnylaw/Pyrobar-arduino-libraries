@@ -24,7 +24,6 @@ uint8_t aerialSpotlightPin = 31;
 uint8_t craneSpotlightPin = 29;
 uint8_t soundLevelPin = 27;
 uint8_t freqBfrPos;
-uint8_t sndBfrPos;
 
 static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();

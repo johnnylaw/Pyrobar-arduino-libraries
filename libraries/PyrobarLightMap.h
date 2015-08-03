@@ -34,7 +34,6 @@ const char pyrobarLightsOn[] = "on";
 const char pyrobarDataTypeFire[] = "fire";
 
 const char pyrobarDataTypeScalar[] = "sclr";
-const char pyrobarScalarTypeSoundSensitivity[] = "sndSens";
 const char pyrobarScalarTypeFrequency[] = "freq";
 
 class PyrobarLightMap {

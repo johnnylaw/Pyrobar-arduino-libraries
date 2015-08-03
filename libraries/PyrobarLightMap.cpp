@@ -117,12 +117,6 @@ bool PyrobarLightMap::setScalar(String type, float value) {
       //Serial.print("Frequency: ");
       //Serial.println(_frequency);
     }
-  } else if (type == pyrobarScalarTypeSoundSensitivity) {
-    _soundSensitivity = value;
-    if (DEBUG_LIGHT_MAP) {
-      //Serial.print("Sound sensitivity: ");
-      //Serial.print(_soundSensitivity);
-    }
   } else {
     return false;
   }
