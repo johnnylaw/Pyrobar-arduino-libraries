@@ -9,7 +9,7 @@ typedef struct SlaveZoneAddresses {
 
 #define BASE_I2C_ADDRESS 0x10
 const uint8_t numberOfSlaves = 2;
-const SlaveZoneAddresses slaveZoneAddresses[2] = {{0, 7}, {8, 9}};
+const SlaveZoneAddresses slaveZoneAddresses[2] = {{0, 9}, {10, 11}};
 
 #define _DEBUG true
 #define DEBUG_REQUEST_HANDLER false
@@ -24,7 +24,7 @@ const SlaveZoneAddresses slaveZoneAddresses[2] = {{0, 7}, {8, 9}};
 #define DEBUG_SOUND_LEVEL false
 
 #define UDP_TX_PACKET_MAX_SIZE 8
-#define TOTAL_ZONE_COUNT 10
+#define TOTAL_ZONE_COUNT 12
 #define COLOR_COUNT 3
 #define CANNON_COUNT 3
 
