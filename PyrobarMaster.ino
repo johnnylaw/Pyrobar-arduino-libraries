@@ -34,7 +34,7 @@ static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandle
 static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet, &fireSequence);
 
 static PyrobarFireController FireCtrl = PyrobarFireController(CANNON_COUNT, firePins, &fireSequence);
-bool sendToSlaves;
+int cycleCounter;
 
 EthernetServer server(80);
 
@@ -70,11 +70,18 @@ void loop() {
       PBHTTPRequestHandler.handleRequest(client);
     }
   }
-  if (sendToSlaves = !sendToSlaves) {
+  if (sendToSlaves()) {
     MasterCtrl.calculateBufferPositions(&freqBfrPos);
     MasterCtrl.sendLightProgramInfo(freqBfrPos);
+  } else {
+    delay(12);
   }
-  delay(20);
+}
+
+boolean sendToSlaves() {
+  cycleCounter++;
+  cycleCounter = cycleCounter % 4;
+  return (cycleCounter == 0);
 }
 
 void printDiagnostics() {
