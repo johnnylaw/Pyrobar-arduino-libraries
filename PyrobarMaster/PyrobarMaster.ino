@@ -19,7 +19,7 @@ EthernetUDP Udp;
 
 unsigned char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
-uint8_t firePins[CANNON_COUNT] = {37, 35, 33};
+uint8_t firePins[CANNON_COUNT] = {37, 47, 51};
 uint8_t aerialSpotlightPin = 31;
 uint8_t craneSpotlightPin = 29;
 uint8_t soundLevelPin = 27;

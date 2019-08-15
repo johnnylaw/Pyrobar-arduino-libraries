@@ -6,7 +6,7 @@
 #include "LightStripInfo.h"
 #include "LightStrip.h"
 
-#define SLAVE 1
+#define SLAVE 0
 
 #if SLAVE == 0
 
@@ -15,12 +15,12 @@ const int zoneCount = 9;
 const int stripCount = 6;
 RGBColor tempColors[stripCount][300]; // Second size must be that of strip with highest number of bulbs
 
-PololuLedStrip<37> strip0;
-PololuLedStrip<35> strip1;     // If there's a need for another strip, this pin is wired up.
-PololuLedStrip<33> strip2;
-PololuLedStrip<31> strip3;
-PololuLedStrip<29> strip4;
-PololuLedStrip<27> strip5;
+PololuLedStrip<53> strip0;
+PololuLedStrip<51> strip1;     // If there's a need for another strip, this pin is wired up.
+PololuLedStrip<49> strip2;
+PololuLedStrip<47> strip3;
+PololuLedStrip<45> strip4;
+PololuLedStrip<43> strip5;
 
 // LightStrip is struct with
 //   - PololuLedStrip pointer
@@ -68,23 +68,23 @@ void createZoneMappings(void) {
 //   - (int) count of bulbs following starting bulb
 // Format:
 //   zoneStripMappingSets[zone number].push(ZoneStripMapping{strip, starting bulb, bulb count})
-  zoneStripMappingSets[0].push(ZoneStripMapping{0, 0, 16});     // Crane ring
-  zoneStripMappingSets[1].push(ZoneStripMapping{0, 26, 22});    // Crane top (16 - 19 black)
-  zoneStripMappingSets[2].push(ZoneStripMapping{0, 48, 27});    // Crane middle
-  zoneStripMappingSets[3].push(ZoneStripMapping{0, 75, 28});    // Crane bottom
-  zoneStripMappingSets[4].push(ZoneStripMapping{2, 0, 130});    // Bar ceiling (130 - 169 black)
-  zoneStripMappingSets[4].push(ZoneStripMapping{2, 170, 130});  // Bar ceiling
-  zoneStripMappingSets[5].push(ZoneStripMapping{3, 0, 130});    // Bar surface (130 - 169 black)
-  zoneStripMappingSets[5].push(ZoneStripMapping{3, 170, 130});  // Bar surface ...
-  zoneStripMappingSets[5].push(ZoneStripMapping{4, 0, 19});     //   ... and DJ booth
-  zoneStripMappingSets[6].push(ZoneStripMapping{5, 30, 15});    // Pillar high
-  zoneStripMappingSets[7].push(ZoneStripMapping{5, 15, 15});    // Pillar mid
-  zoneStripMappingSets[8].push(ZoneStripMapping{5, 0, 15});     // Pillar low
+  zoneStripMappingSets[0].push_back(ZoneStripMapping{0, 0, 16});     // Crane ring
+  zoneStripMappingSets[1].push_back(ZoneStripMapping{0, 26, 22});    // Crane top (16 - 19 black)
+  zoneStripMappingSets[2].push_back(ZoneStripMapping{0, 48, 27});    // Crane middle
+  zoneStripMappingSets[3].push_back(ZoneStripMapping{0, 75, 28});    // Crane bottom
+  zoneStripMappingSets[4].push_back(ZoneStripMapping{2, 0, 130});    // Bar ceiling (130 - 169 black)
+  zoneStripMappingSets[4].push_back(ZoneStripMapping{2, 170, 130});  // Bar ceiling
+  zoneStripMappingSets[5].push_back(ZoneStripMapping{3, 0, 130});    // Bar surface (130 - 169 black)
+  zoneStripMappingSets[5].push_back(ZoneStripMapping{3, 170, 130});  // Bar surface ...
+  zoneStripMappingSets[5].push_back(ZoneStripMapping{4, 0, 19});     //   ... and DJ booth
+  zoneStripMappingSets[6].push_back(ZoneStripMapping{5, 30, 15});    // Pillar high
+  zoneStripMappingSets[7].push_back(ZoneStripMapping{5, 15, 15});    // Pillar mid
+  zoneStripMappingSets[8].push_back(ZoneStripMapping{5, 0, 15});     // Pillar low
 
 #elif SLAVE == 1
 
-  zoneStripMappingSets[0].push(ZoneStripMapping{0, 0, 93});     // Steps
-  zoneStripMappingSets[1].push(ZoneStripMapping{1, 0, 800});  // Undercarriage
+  zoneStripMappingSets[0].push_back(ZoneStripMapping{0, 0, 93});     // Steps
+  zoneStripMappingSets[1].push_back(ZoneStripMapping{1, 0, 800});  // Undercarriage
 
 #endif
 
@@ -109,8 +109,12 @@ void writeStrips() {
 }
 
 void parseLightValues(int packetSize) {
+  Serial.println("Hello");
   for (int zoneIndex = 0; zoneIndex < zoneCount; zoneIndex++) {
-    writeBuffer(zoneIndex, Wire.read(), Wire.read(), Wire.read());
+    uint8_t r = Wire.read();
+    uint8_t g = Wire.read();
+    uint8_t b = Wire.read();
+    writeBuffer(zoneIndex, r, g, b);
     packetSize -= 3;
   }
   while (packetSize--) { Wire.read(); }
@@ -136,6 +140,3 @@ void setup() {
 void loop() {
   delay(1000);
 }
-
-
-
