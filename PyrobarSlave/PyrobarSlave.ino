@@ -116,6 +116,7 @@ void parseLightValues(int packetSize) {
     uint8_t b = Wire.read();
     writeBuffer(zoneIndex, r, g, b);
     packetSize -= 3;
+    // Serial.print(zoneIndex); Serial.print(": "); Serial.print(r); Serial.print(", "); Serial.print(g); Serial.print(", "); Serial.println(b); 
   }
   while (packetSize--) { Wire.read(); }
   writeStrips();
