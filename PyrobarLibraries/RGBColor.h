@@ -6,6 +6,10 @@
 typedef struct RGBColor {
   unsigned char red, green, blue;
 
+  RGBColor(unsigned char c1, unsigned char c2, unsigned char c3) {
+    red = c1; green = c2; blue = c3;
+  }
+
   RGBColor(unsigned char c1, unsigned char c2, unsigned char c3, LightStripInfo info) {
     if (info.maxBrightness) {
       attenuate(&c1, &c2, &c3, info.maxBrightness);
@@ -41,4 +45,3 @@ typedef struct RGBColor {
     }
   }
 } RGBColor;
-
