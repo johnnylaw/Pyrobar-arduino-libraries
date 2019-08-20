@@ -67,7 +67,7 @@ void loop() {
   if (!FireCtrl.play()) {
     if (EthernetClient client = server.available()) {
       if (_DEBUG) Serial.println("\nClient exists!");
-      PBHTTPRequestHandler.handleRequest(client);
+      handleHTTP(client);
     }
   }
   if (sendToSlaves()) {
@@ -78,6 +78,11 @@ void loop() {
   }
 }
 
+void handleHTTP(EthernetClient client) {
+  PBHTTPRequestHandler.handleRequest(client);
+  printDiagnostics();
+}
+
 boolean sendToSlaves() {
   cycleCounter++;
   cycleCounter = cycleCounter % 4;
@@ -85,35 +90,19 @@ boolean sendToSlaves() {
 }
 
 void printDiagnostics() {
-  Serial.println("\nFrequency buffer values (every 4th):");
-  for(int ptr = 0; ptr < 256; ptr += 4) {
-    for(int zone = 0; zone < TOTAL_ZONE_COUNT; zone++) {
-      Serial.print("(");
+  Serial.println("\nFrequency buffer values:");
+  for(int zone = 0; zone < TOTAL_ZONE_COUNT; zone++) {
+    Serial.print("{");
+    for(int ptr = 0; ptr < 256; ptr += 1) {
+      Serial.print("{");
       Serial.print(lightMap.read("frequency", zone, ptr, 0));
       Serial.print(", ");
       Serial.print(lightMap.read("frequency", zone, ptr, 1));
       Serial.print(", ");
       Serial.print(lightMap.read("frequency", zone, ptr, 2));
-      Serial.print(")\t");
+      Serial.print("}, ");
     }
     Serial.println();
   }
-  Serial.println("\nSound buffer values:");
-  for(int ptr = 0; ptr < 16; ptr++) {
-    for(int zone = 0; zone < TOTAL_ZONE_COUNT; zone++) {
-      Serial.print("(");
-      Serial.print(lightMap.read("sound", zone, ptr, 0));
-      Serial.print(", ");
-      Serial.print(lightMap.read("sound", zone, ptr, 1));
-      Serial.print(", ");
-      Serial.print(lightMap.read("sound", zone, ptr, 2));
-      Serial.print(")\t");
-    }
-    Serial.println();
-  }
-
-  Serial.print("Sound senstivity: ");
-  Serial.print(lightMap.soundSensitivity());
-  Serial.print(", Frequency: ");
-  Serial.println(lightMap.frequency() * 1000.0);
+  Serial.println("},");
 }
