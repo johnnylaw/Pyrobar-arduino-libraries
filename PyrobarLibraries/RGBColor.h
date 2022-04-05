@@ -17,6 +17,8 @@ typedef struct RGBColor {
 
     if (info.voltage == 12) {
       green = c1; blue = c2; red = c3;
+    } else if (info.voltage == 13) {
+      red = c1; blue = c2; green = c3;
     } else {
       red = c1; green = c2; blue = c3;
     }

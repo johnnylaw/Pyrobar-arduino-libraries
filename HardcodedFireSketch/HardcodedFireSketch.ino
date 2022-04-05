@@ -9,7 +9,7 @@
 
 static ZoneStripMapping zoneStripMappingSets[11][3];
 
-const int stripCount = 8;
+const int stripCount = 9;
 const int highestStripLength = 800;
 RGBColor tempColors[stripCount][highestStripLength];
 
@@ -21,6 +21,7 @@ PololuLedStrip<45> strip4;
 PololuLedStrip<43> strip5;
 PololuLedStrip<37> strip6;
 PololuLedStrip<35> strip7;
+PololuLedStrip<33> strip8;
 
 // LightStrip is struct with
 //   - PololuLedStrip pointer
@@ -40,8 +41,9 @@ LightStrip lightStrips[] = {
   {&strip3, {5, 300}},   // Bar surface (1 zone)
   {&strip4, {12, 19}},        // DJ booth (same zone as bar surface)
   {&strip5, {5, 45}},         // Front pillars
-  {&strip6, {12, 93}},         // Steps (1 zone)
+  {&strip6, {13, 62}},         // Steps (1 zone)
   {&strip7, {5, 800}},        // Undercarriage (1 zone)
+  {&strip8, {12, 30}},        // Steps (1 zone) continued
 };
 
 void createZoneMappings(void) {
@@ -64,25 +66,19 @@ void createZoneMappings(void) {
   zoneStripMappingSets[6][0] = {5, 30, 15};    // Pillar high
   zoneStripMappingSets[7][0] = {5, 15, 15};    // Pillar mid
   zoneStripMappingSets[8][0] = {5, 0, 15};     // Pillar low
-  zoneStripMappingSets[9][0] = {6, 0, 12};     // Steps
-  zoneStripMappingSets[9][1] = {6, 12, 50};     // Steps
-  zoneStripMappingSets[9][2] = {6, 50, 15};     // Steps
+  zoneStripMappingSets[9][0] = {6, 0, 62};     // Steps
+  zoneStripMappingSets[9][1] = {8, 0, 30};     // Steps
   zoneStripMappingSets[10][0] = {7, 0, 800};  // Undercarriage
 }
 
-const int zoneStripMappingSetSizes[11] = {1, 1, 1, 1, 2, 3, 1, 1, 1, 3, 1};
+const int zoneStripMappingSetSizes[11] = {1, 1, 1, 1, 2, 3, 1, 1, 1, 2, 1};
 
 void writeBuffer(int zoneIndex, uint8_t red, uint8_t green, uint8_t blue) {
   ZoneStripMappingSet mappingSet = zoneStripMappingSets[zoneIndex];
   int mappingSetSize = zoneStripMappingSetSizes[zoneIndex];
   for (int mapIndex = 0; mapIndex < mappingSetSize; mapIndex++) {
     ZoneStripMapping mapping = mappingSet[mapIndex];
-    RGBColor color;
-    if (zoneIndex == 9 && mapIndex == 1) { // weird strip spliced with other strip
-      color = RGBColor(red, green, blue, { 8, 100, 0 });
-    } else {
-      color = RGBColor(red, green, blue, lightStrips[mapping.strip].info);
-    }
+    RGBColor color = RGBColor(red, green, blue, lightStrips[mapping.strip].info);
     for (int bulb = mapping.start; bulb < mapping.start + mapping.count; bulb++) {
       tempColors[mapping.strip][bulb] = color;
     }
